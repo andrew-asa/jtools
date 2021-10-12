@@ -1,0 +1,20 @@
+#!/bin/sh
+#echo "hello java tools"
+JAR="jtools-1.0-SNAPSHOT-jar-with-dependencies.jar"
+JAR_DIR="/Users/andrew_asa/Documents/code/github/andrew-asa/exec/jtools/target/"
+CLASS_PACKAGE="com.asa.jtools.bin"
+if [ $# -lt 1 ] ; then
+echo "输入命令名称"
+exit 1;
+fi
+CMD=$1
+ARG=""
+for((i=2;i<=$#;i++));
+do
+ARG="${ARG} ${!i} "
+done
+#echo $CMD $ARG
+SHELL="java -cp "$JAR_DIR$JAR" "$CLASS_PACKAGE.$CMD" "$ARG""
+echo $SHELL
+$SHELL
+
