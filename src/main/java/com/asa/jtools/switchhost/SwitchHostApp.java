@@ -7,7 +7,9 @@ import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
 import com.asa.third.org.apache.commons.lang3.RandomUtils;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -89,7 +91,9 @@ public class SwitchHostApp extends Application {
             @Override
             public void handle(ActionEvent event) {
 
-                TreeItem<HostItem> net = getTreeRootItemById(SwitchHostConstant.NET);
+                JFXDialog dialog = new JFXDialog();
+                //dialog.set
+                //TreeItem<HostItem> net = getTreeRootItemById(SwitchHostConstant.NET);
                 //HostItem r = new HostItem();
                 //r.setType(HostItem.HostType.NET);
                 //String id = RandomStringUtils.randomAlphabetic(10);
@@ -140,7 +144,7 @@ public class SwitchHostApp extends Application {
     private TreeView getTreeView() {
 
         TreeView<HostItem> treeView = new TreeView<>();
-        treeView.setCellFactory((TreeView<HostItem> p) -> new HostTreeCell(dbService));
+        treeView.setCellFactory((TreeView<HostItem> p) -> new HostTreeCell(dbService,treeView));
         TreeItem<HostItem> root = getRootItem(dbService);
         treeView.setRoot(root);
         treeView.setShowRoot(false);
