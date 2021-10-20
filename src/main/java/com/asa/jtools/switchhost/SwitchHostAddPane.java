@@ -1,11 +1,30 @@
 package com.asa.jtools.switchhost;
 
+import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
+import com.asa.jtools.switchhost.bean.HostItem;
+import com.asa.jtools.switchhost.constant.SwitchHostConstant;
 import com.jfoenix.controls.JFXTabPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import org.controlsfx.control.PrefixSelectionChoiceBox;
+import org.controlsfx.control.textfield.CustomTextField;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author andrew_asa
@@ -13,24 +32,130 @@ import org.kordamp.ikonli.fontawesome.FontAwesome;
  */
 public class SwitchHostAddPane extends BorderPane {
 
+    private int labelHeight = 25;
+
+    private int labelWidth = 100;
+
+    private int inputWidth = 300;
+
+    private TabPane tabPane;
+
     public SwitchHostAddPane() {
+
         super();
         init();
     }
 
     private void init() {
-        JFXTabPane tabPane = new JFXTabPane();
-        tabPane.setPrefSize(400, 100);
-        Tab tab1 = new Tab("Local", FontIconUtils.createIconButton(FontAwesome.FILE, 16));
-        tab1.setContent(new Label("本地"));
-        Tab tab2 = new Tab("Remote",FontIconUtils.createIconButton(FontAwesome.GLOBE, 18));
-        tab2.setContent(new Label("网络"));
-        tabPane.getTabs().add(tab1);
-        tabPane.getTabs().add(tab2);
+
+        tabPane = new JFXTabPane();
+        //tabPane.setPrefSize(400, 100);
+        Tab local = new Tab(SwitchHostConstant.LOCAL, FontIconUtils.createIconButton(FontAwesome.FILE, 16));
+        local.setContent(createLocalAddPane());
+        Tab remote = new Tab(SwitchHostConstant.REMOTE, FontIconUtils.createIconButton(FontAwesome.GLOBE, 18));
+        remote.setContent(createNetAddPane());
+        tabPane.getTabs().add(remote);
+        tabPane.getTabs().add(local);
         setTop(tabPane);
     }
 
-    public void saveAdd() {
+    public HostItem getItem() {
 
+        if (StringUtils.equals(tabPane.getSelectionModel().getSelectedItem().getText(), SwitchHostConstant.LOCAL)) {
+            return createLocalItemValue();
+        } else {
+            return createNetItemValue();
+        }
     }
+
+
+    private TextField netName;
+
+    private TextField netUrl;
+
+    private ChoiceBox<String> netUpdateFrequency;
+
+    public Node createNetAddPane() {
+
+        VBox root = new VBox();
+        root.setPadding(new Insets(10, 0, 0, 0));
+        root.setSpacing(15);
+        Label nameLabel = new Label("Host方案名");
+        netName = new CustomTextField();
+        nameLabel.setPrefHeight(labelHeight);
+        nameLabel.setAlignment(Pos.CENTER_LEFT);
+        nameLabel.setPrefWidth(labelWidth);
+        netName.setPrefWidth(inputWidth);
+        HBox name = new HBox();
+        name.getChildren().addAll(nameLabel, netName);
+
+        HBox url = new HBox();
+        Label urlLabel = new Label("url地址");
+        netUrl = new CustomTextField();
+        url.getChildren().addAll(urlLabel, netUrl);
+        urlLabel.setAlignment(Pos.CENTER_LEFT);
+        urlLabel.setPrefWidth(labelWidth);
+        urlLabel.setPrefHeight(labelHeight);
+        netUrl.setPrefWidth(inputWidth);
+
+        HBox update = new HBox();
+        Label updateLabel = new Label("更新频率");
+        ObservableList<String> fre = FXCollections.<String>observableArrayList(SwitchHostConstant.UPDATE_FREQUENCY);
+        netUpdateFrequency = new PrefixSelectionChoiceBox();
+        netUpdateFrequency.setValue(SwitchHostConstant.UPDATE_FREQUENCY.get(0));
+        netUpdateFrequency.setItems(fre);
+        updateLabel.setAlignment(Pos.CENTER_LEFT);
+        updateLabel.setPrefWidth(labelWidth);
+        updateLabel.setPrefHeight(labelHeight);
+        update.getChildren().addAll(updateLabel, netUpdateFrequency);
+
+        root.getChildren().addAll(name, url, update);
+        return root;
+    }
+
+    private HostItem createNetItemValue() {
+
+        HostItem item = new HostItem();
+        item.setType(HostItem.HostType.NET);
+        item.setName(netName.getText());
+        Map configure = new HashMap<>();
+        configure.put(SwitchHostConstant.URL, netUrl.getText());
+        configure.put(SwitchHostConstant.FREQUENCY, netUpdateFrequency.getValue());
+        item.setConfigure(configure);
+        return item;
+    }
+
+
+    private TextField localName;
+
+    public Node createLocalAddPane() {
+
+        VBox root = new VBox();
+        root.setPadding(new Insets(20, 0, 0, 0));
+        root.setSpacing(15);
+        Label nameLabel = new Label("Hosts方案名");
+        localName = new CustomTextField();
+        nameLabel.setPrefHeight(labelHeight);
+        nameLabel.setAlignment(Pos.CENTER_LEFT);
+        nameLabel.setPrefWidth(labelWidth);
+        localName.setPrefWidth(inputWidth);
+        HBox name = new HBox();
+        name.getChildren().addAll(nameLabel, localName);
+        root.getChildren().addAll(name);
+        return root;
+    }
+
+    private HostItem createLocalItemValue() {
+        HostItem item = new HostItem();
+        item.setType(HostItem.HostType.LOCAL);
+        item.setName(localName.getText());
+        return item;
+    }
+
+
+    //public void saveAdd() {
+    //
+    //    SwitchHostEvent event = new SwitchHostEvent(this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, "test");
+    //    fireEvent(event);
+    //}
 }

@@ -1,6 +1,12 @@
 package com.asa.jtools.switchhost;
 
+import javafx.beans.NamedArg;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventTarget;
+import javafx.event.EventType;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -10,15 +16,19 @@ import javafx.scene.layout.HBox;
  */
 public class SwitchHostEditPane extends BorderPane {
 
-    public SwitchHostEditPane() {
+    private SwitchHostService switchHostService;
+
+    public SwitchHostEditPane(SwitchHostService switchHostService) {
 
         super();
-        init();
+        init(switchHostService);
     }
 
-    private void init() {
-
+    private void init(SwitchHostService switchHostService) {
+        this.switchHostService = switchHostService;
         TextArea textArea = new TextArea();
         setCenter(textArea);
     }
+
+
 }

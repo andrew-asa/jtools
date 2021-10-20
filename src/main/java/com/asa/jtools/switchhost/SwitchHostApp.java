@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  */
 public class SwitchHostApp extends Application {
 
-    private SwitchHostService dbService;
+    private SwitchHostService switchHostService;
 
     private StackPane stackPane;
 
@@ -21,7 +21,7 @@ public class SwitchHostApp extends Application {
 
     private SwitchHostNavPane nav;
 
-    SwitchHostEditPane edit;
+    private SwitchHostEditPane edit;
 
     @Override
     public void start(Stage stage) {
@@ -29,9 +29,12 @@ public class SwitchHostApp extends Application {
         stackPane = new StackPane();
         borderPane = new BorderPane();
 
-        nav = new SwitchHostNavPane(stackPane, dbService);
+        nav = new SwitchHostNavPane(stackPane, switchHostService);
+        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> {
+            System.out.println(e.getItem());
+        });
         borderPane.setCenter(nav);
-        edit = new SwitchHostEditPane();
+        edit = new SwitchHostEditPane(switchHostService);
         edit.setPrefWidth(600);
         borderPane.setRight(edit);
         stackPane.getChildren().add(borderPane);
@@ -47,13 +50,14 @@ public class SwitchHostApp extends Application {
     public void init() throws Exception {
 
         super.init();
-        dbService = new SwitchHostService();
-        dbService.init();
+        switchHostService = new SwitchHostService();
+        switchHostService.init();
     }
 
     public static void main(String[] args) {
 
         launch(args);
     }
+
 
 }
