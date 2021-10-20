@@ -31,9 +31,21 @@ public class HostItem {
     private String path;
 
     /**
+     * 内容
+     */
+    private String content;
+
+    /**
      * 配置
      */
     private Map<String,String> configure;
+
+    /**
+     * 是否启用
+     */
+    private boolean apply;
+
+    private boolean parent;
 
     public static enum HostType {
         /**
@@ -99,6 +111,36 @@ public class HostItem {
     public void setId(String id) {
 
         this.id = id;
+    }
+
+    public String getContent() {
+
+        return content;
+    }
+
+    public void setContent(String content) {
+
+        this.content = content;
+    }
+
+    public boolean isApply() {
+
+        return apply;
+    }
+
+    public void setApply(boolean apply) {
+
+        this.apply = apply;
+    }
+
+    public boolean isParent() {
+
+        return parent;
+    }
+
+    public void setParent(boolean parent) {
+
+        this.parent = parent;
     }
 
     @Override

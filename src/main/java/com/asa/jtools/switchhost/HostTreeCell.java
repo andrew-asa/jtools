@@ -6,7 +6,6 @@ import com.asa.jtools.switchhost.bean.HostItem;
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -33,7 +32,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
 
     private BorderPane pane;
 
-    private HBox editBox;
+    private HBox operateBox;
 
     private SwitchHostService switchHostService;
 
@@ -72,7 +71,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
 
         if (item == null || empty) {
             pane = null;
-            editBox = null;
+            operateBox = null;
             setText(null);
             setGraphic(null);
         } else {
@@ -83,50 +82,20 @@ public class HostTreeCell extends TreeCell<HostItem> {
             HostItem hostItem = treeItem.getValue();
             HBox display = customShowBox(treeItem);
             pane.setLeft(display);
-            editBox = customEditButton(hostItem);
-            if (editBox != null) {
-                pane.setRight(editBox);
-            }
+
+
             customContextMenu(hostItem);
-            //pane.setBorder(new Border(new BorderStroke(Color.valueOf("#9E9E9E"),
-            //                                           BorderStrokeStyle.SOLID,
-            //                                           CornerRadii.EMPTY,
-            //                                           BorderWidths.DEFAULT)));
-            // 叶子节点移动上去添加删除按钮
-            if (treeItem.isLeaf()) {
-                pane.setOnMouseEntered(new EventHandler<MouseEvent>() {
-
-                    @Override
-                    public void handle(MouseEvent event) {
-
-                        if (editBox != null && editBox.getChildren() != null && editBox.getChildren().size() == 1) {
-                            Button edit = FontIconUtils.createIconButton(FontAwesome.EDIT, 16);
-                            edit.setPrefWidth(30);
-                            editBox.getChildren().add(0, edit);
-                        }
-                        // TODO 编辑事件
-                        //System.out.println("进入");
-                    }
+            // 叶子节点移动上去添加删除,编辑按钮
+            if (!hostItem.isParent()) {
+                operateBox = customOperationBox(hostItem);
+                HBox editBox = customEditButton(hostItem);
+                pane.setRight(operateBox);
+                pane.setOnMouseEntered(e -> {
+                    operateBox.getChildren().add(0, editBox);
                 });
-                pane.setOnMouseExited(new EventHandler<MouseEvent>() {
-
-                    @Override
-                    public void handle(MouseEvent event) {
-                        //System.out.println("退出");
-                        if (editBox != null && editBox.getChildren() != null && editBox.getChildren().size() == 2) {
-                            editBox.getChildren().remove(0);
-                        }
-                    }
+                pane.setOnMouseExited(event -> {
+                    operateBox.getChildren().remove(editBox);
                 });
-                pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-                    @Override
-                    public void handle(MouseEvent event) {
-
-                        //System.out.println("点击了");
-                    }
-                });
-
             }
             setGraphic(pane);
         }
@@ -135,7 +104,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
     private void customContextMenu(HostItem hostItem) {
 
         HostItem.HostType type = hostItem.getType();
-        if (HostItem.HostType.NET.equals(type)) {
+        if (!hostItem.isParent() && HostItem.HostType.NET.equals(type)) {
             ContextMenu contextMenu = new ContextMenu();
             MenuItem refresh = new MenuItem("刷新");
             refresh.setOnAction(event -> {
@@ -171,23 +140,37 @@ public class HostTreeCell extends TreeCell<HostItem> {
         return display;
     }
 
+    private HBox customOperationBox(HostItem hostItem) {
+
+        HBox hBox = new HBox();
+        if (!hostItem.isParent()) {
+            boolean apply = hostItem.isApply();
+            Button button;
+            if (apply) {
+                button = FontIconUtils.createIconButton(FontAwesome.TOGGLE_ON, Color.GREEN);
+                button.setOnAction(e->{
+
+                });
+            } else {
+                button = FontIconUtils.createIconButton(FontAwesome.TOGGLE_OFF);
+            }
+            button.setPrefWidth(30);
+            hBox.getChildren().addAll(button);
+        }
+        return hBox;
+    }
+
     private HBox customEditButton(HostItem hostItem) {
 
         HBox hBox = new HBox();
-        HostItem.HostType type = hostItem.getType();
-        if (type == null) {
-            return null;
-        }
-        String id = hostItem.getId();
-        Button button;
-        if (StringUtils.equals(id, switchHostService.getCurrentHostsId())) {
-            button = FontIconUtils.createIconButton(FontAwesome.TOGGLE_ON, 16, Color.GREEN);
-        } else {
-            button = FontIconUtils.createIconButton(FontAwesome.TOGGLE_OFF, 16);
-        }
-        // TODO
-        button.setPrefWidth(30);
-        hBox.getChildren().add(button);
+        Button edit = FontIconUtils.createIconButton(FontAwesome.EDIT);
+        Button delete = FontIconUtils.createIconButton(FontAwesome.TRASH);
+        delete.setOnAction(e->{
+            SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, hostItem);
+            fireEvent(addEvent);
+        });
+        edit.setPrefWidth(30);
+        hBox.getChildren().addAll(delete, edit);
         return hBox;
     }
 

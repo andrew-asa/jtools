@@ -28,11 +28,8 @@ public class SwitchHostApp extends Application {
 
         stackPane = new StackPane();
         borderPane = new BorderPane();
-
         nav = new SwitchHostNavPane(stackPane, switchHostService);
-        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> {
-            System.out.println(e.getItem());
-        });
+        addNavListener(nav, switchHostService);
         borderPane.setCenter(nav);
         edit = new SwitchHostEditPane(switchHostService);
         edit.setPrefWidth(600);
@@ -45,6 +42,13 @@ public class SwitchHostApp extends Application {
         stage.setOnCloseRequest(e -> {
             System.exit(0);
         });
+    }
+
+    private void addNavListener(SwitchHostNavPane nav, SwitchHostService switchHostService) {
+
+        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> switchHostService.addItem(e.getValue()));
+        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, e -> switchHostService.removeItem(e.getValue()));
+        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, e -> switchHostService.removeItem(e.getValue()));
     }
 
     public void init() throws Exception {

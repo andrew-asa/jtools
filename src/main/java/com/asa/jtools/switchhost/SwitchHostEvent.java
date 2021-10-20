@@ -28,13 +28,29 @@ public class SwitchHostEvent extends Event {
     public static final EventType<SwitchHostEvent> SWITCH_HOST_UPDATE_EVENT =
             new EventType<>(Event.ANY, "SWITCH_HOST_UPDATE_EVENT");
 
-    private HostItem item;
+    /**
+     * 刷新
+     */
+    public static final EventType<SwitchHostEvent> SWITCH_HOST_REFRESH_EVENT =
+            new EventType<>(Event.ANY, "SWITCH_HOST_REFRESH_EVENT");
+
+    private HostItem value;
+
+    private HostItem oldValue;
 
     public SwitchHostEvent(final Object source,
-                           final EventType<SwitchHostEvent> eventType, HostItem item) {
+                           final EventType<SwitchHostEvent> eventType, HostItem value) {
 
         super(source, Event.NULL_SOURCE_TARGET, eventType);
-        this.item = item;
+        this.value = value;
+    }
+
+    public SwitchHostEvent(final Object source,
+                           final EventType<SwitchHostEvent> eventType, HostItem value, HostItem oldValue) {
+
+        super(source, Event.NULL_SOURCE_TARGET, eventType);
+        this.value = value;
+        this.oldValue = oldValue;
     }
 
     @Override
@@ -43,13 +59,23 @@ public class SwitchHostEvent extends Event {
         return (EventType<SwitchHostEvent>) super.getEventType();
     }
 
-    public Object getItem() {
+    public HostItem getValue() {
 
-        return item;
+        return value;
     }
 
-    public void setItem(HostItem item) {
+    public void setValue(HostItem value) {
 
-        this.item = item;
+        this.value = value;
+    }
+
+    public HostItem getOldValue() {
+
+        return oldValue;
+    }
+
+    public void setOldValue(HostItem oldValue) {
+
+        this.oldValue = oldValue;
     }
 }

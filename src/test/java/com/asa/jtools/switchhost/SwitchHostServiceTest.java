@@ -25,7 +25,7 @@ public class SwitchHostServiceTest extends TestCase {
         SwitchHostService service = new SwitchHostService();
         Map<String, HostItem> itemMap = new HashMap<>();
         HostItem hostItem = service.createDefaultHostItem();
-        itemMap.put(hostItem.getId(), hostItem);
+        //itemMap.put(hostItem.getId(), hostItem);
         HostItems items = new HostItems();
         items.setItemMap(itemMap);
         service.saveHostItems(items);

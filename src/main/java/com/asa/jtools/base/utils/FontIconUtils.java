@@ -13,15 +13,27 @@ import org.kordamp.ikonli.javafx.FontIcon;
  */
 public class FontIconUtils {
 
+    public static final int DEFAULT_ICON_SIZE = 16;
+
+    public static Button createIconButton(Ikon des) {
+
+        return createIconButton(des, DEFAULT_ICON_SIZE, Color.BLACK);
+    }
+
     public static Button createIconButton(Ikon des, int iconSize) {
 
-        return createIconButton(des,iconSize,Color.BLACK);
+        return createIconButton(des, iconSize, Color.BLACK);
+    }
+
+    public static Button createIconButton(Ikon des, Color color) {
+
+        return createIconButton(des, DEFAULT_ICON_SIZE, color);
     }
 
     public static Button createIconButton(Ikon des, int iconSize, Color color) {
 
         JFXButton button = new JFXButton();
-        FontIcon fontIcon = FontIcon.of(des, iconSize,color);
+        FontIcon fontIcon = FontIcon.of(des, iconSize, color);
         button.setGraphic(fontIcon);
         return button;
     }

@@ -70,16 +70,13 @@ public class SwitchHostService {
             System.exit(-1);
         }
         try {
-            boolean init = loadSettings();
             HostItems hostItems = getHostItems();
             // 不存在先进行刷新
-            if (hostItems == null || !hostItems.existItem() || !init) {
+            if (hostItems == null || !hostItems.existItem()) {
                 LoggerFactory.getLogger().debug("系统初始化");
-                backupSystemHosts();
             } else {
                 LoggerFactory.getLogger().debug("系统已经初始化过");
             }
-            // 同时需要检查配置文件
         } catch (Exception e) {
             LoggerFactory.getLogger().error("无法备份[{}],程序退出", SYSTEM_HOSTS_PATH);
             System.exit(-1);
@@ -94,10 +91,10 @@ public class SwitchHostService {
 
         Map<String, HostItem> itemMap = new HashMap<>();
         HostItem defaultHostItem = createDefaultHostItem();
-        itemMap.put(defaultHostItem.getId(), defaultHostItem);
+        //itemMap.put(defaultHostItem.getId(), defaultHostItem);
         HostItems items = new HostItems();
         items.setItemMap(itemMap);
-        saveHostFile(SYSTEM_HOSTS_PATH, defaultHostItem.getId());
+        //saveHostFile(SYSTEM_HOSTS_PATH, defaultHostItem.getId());
         saveHostItems(items);
         //    配置文件默认
         settings = new SwitchHostSettings();
@@ -138,6 +135,10 @@ public class SwitchHostService {
         hostItems = getObject(HostItems.class, getDBFile());
         return hostItems;
     }
+
+    //public void saveHostItems(HostItems hostItems) {
+    //
+    //}
 
     public <T> T getObject(Class<T> valueType, File file) {
 
@@ -206,7 +207,7 @@ public class SwitchHostService {
         HostItem defaultHosts = new HostItem();
         defaultHosts.setType(HostItem.HostType.LOCAL);
         defaultHosts.setName(DEFAULT_HOSTS_ID);
-        defaultHosts.setId(DEFAULT_HOSTS_ID);
+        //defaultHosts.setId(DEFAULT_HOSTS_ID);
         defaultHosts.setPath(FilenameUtils.concat(SwitchHostService.HOST_DIR, DEFAULT_HOSTS_ID));
         return defaultHosts;
     }
@@ -221,10 +222,27 @@ public class SwitchHostService {
     }
 
     public String getCurrentHostsId() {
+
         settings = getSettings();
         if (settings != null) {
             return settings.getCurrentHostId();
         }
         return StringUtils.EMPTY;
+    }
+
+    public void addItem(HostItem item) {
+
+        LoggerFactory.getLogger().debug("add {}", item);
+    }
+
+    public void removeItem(HostItem item) {
+
+        LoggerFactory.getLogger().debug("remove {}", item);
+
+    }
+
+    public void updateItem(HostItem newItem, HostItem oldItem) {
+
+        LoggerFactory.getLogger().debug("update {} to {}", oldItem, newItem);
     }
 }
