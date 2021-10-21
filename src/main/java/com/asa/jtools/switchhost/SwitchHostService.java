@@ -133,12 +133,11 @@ public class SwitchHostService {
             return hostItems;
         }
         hostItems = getObject(HostItems.class, getDBFile());
+        if (hostItems == null) {
+            hostItems = new HostItems();
+        }
         return hostItems;
     }
-
-    //public void saveHostItems(HostItems hostItems) {
-    //
-    //}
 
     public <T> T getObject(Class<T> valueType, File file) {
 

@@ -1,5 +1,6 @@
 package com.asa.jtools.switchhost;
 
+import com.asa.jtools.switchhost.bean.HostItems;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -28,7 +29,8 @@ public class SwitchHostApp extends Application {
 
         stackPane = new StackPane();
         borderPane = new BorderPane();
-        nav = new SwitchHostNavPane(stackPane, switchHostService);
+        HostItems items = switchHostService.getHostItems();
+        nav = new SwitchHostNavPane(stackPane, items);
         addNavListener(nav, switchHostService);
         borderPane.setCenter(nav);
         edit = new SwitchHostEditPane(switchHostService);
@@ -48,7 +50,6 @@ public class SwitchHostApp extends Application {
 
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> switchHostService.addItem(e.getValue()));
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, e -> switchHostService.removeItem(e.getValue()));
-        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, e -> switchHostService.removeItem(e.getValue()));
     }
 
     public void init() throws Exception {
@@ -62,6 +63,4 @@ public class SwitchHostApp extends Application {
 
         launch(args);
     }
-
-
 }

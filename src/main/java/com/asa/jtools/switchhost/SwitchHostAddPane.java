@@ -22,7 +22,6 @@ import org.controlsfx.control.PrefixSelectionChoiceBox;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +39,7 @@ public class SwitchHostAddPane extends BorderPane {
 
     private TabPane tabPane;
 
+
     public SwitchHostAddPane() {
 
         super();
@@ -49,13 +49,12 @@ public class SwitchHostAddPane extends BorderPane {
     private void init() {
 
         tabPane = new JFXTabPane();
-        //tabPane.setPrefSize(400, 100);
         Tab local = new Tab(SwitchHostConstant.LOCAL, FontIconUtils.createIconButton(FontAwesome.FILE, 16));
         local.setContent(createLocalAddPane());
         Tab remote = new Tab(SwitchHostConstant.REMOTE, FontIconUtils.createIconButton(FontAwesome.GLOBE, 18));
         remote.setContent(createNetAddPane());
-        tabPane.getTabs().add(remote);
         tabPane.getTabs().add(local);
+        tabPane.getTabs().add(remote);
         setTop(tabPane);
     }
 

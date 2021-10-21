@@ -3,8 +3,11 @@ package com.asa.jtools.switchhost;
 import com.asa.base.log.LoggerFactory;
 import com.asa.base.ui.controls.button.JButton;
 import com.asa.base.utils.ListUtils;
+import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
+import com.asa.jtools.base.utils.RandomStringUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
+import com.asa.jtools.switchhost.bean.HostItems;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -31,18 +34,21 @@ public class SwitchHostNavPane extends BorderPane {
 
     private StackPane rootStackPane;
 
-    private SwitchHostService dbService;
+    private HostItems treeItems;
 
-    public SwitchHostNavPane(StackPane rootStackPane, SwitchHostService dbService) {
+    //private SwitchHostService dbService;
+
+    public SwitchHostNavPane(StackPane rootStackPane, HostItems treeItems) {
 
         super();
-        init(rootStackPane, dbService);
+        init(rootStackPane, treeItems);
     }
 
-    private void init(StackPane rootStackPane, SwitchHostService dbService) {
+    private void init(StackPane rootStackPane, HostItems items) {
 
         this.rootStackPane = rootStackPane;
-        this.dbService = dbService;
+        this.treeItems = items;
+        //this.dbService = dbService;
         this.treeView = getTreeView();
         HBox bottom = createOperation();
         setBottom(bottom);
@@ -52,36 +58,37 @@ public class SwitchHostNavPane extends BorderPane {
     private TreeView getTreeView() {
 
         treeView = new TreeView<>();
-        treeView.setCellFactory((TreeView<HostItem> p) -> new HostTreeCell(dbService, treeView));
+        treeView.setCellFactory((TreeView<HostItem> p) -> new HostTreeCell(treeView));
         treeView.addEventHandler(SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, e -> {
-           removeHostItem(e.getValue());
+            e.consume();
+            removeTreeItem(e.getValue());
         });
-        TreeItem<HostItem> root = getRootItem(dbService);
+        TreeItem<HostItem> root = getRootItem(treeItems);
         treeView.setRoot(root);
         treeView.setShowRoot(false);
         root.setExpanded(true);
         return treeView;
     }
 
-    private TreeItem<HostItem> getRootItem(SwitchHostService dbService) {
+    private TreeItem<HostItem> getRootItem(HostItems treeItems) {
 
         HostItem rootItem = new HostItem();
         rootItem.setName("Root");
         TreeItem<HostItem> root = new TreeItem<HostItem>(rootItem);
-        TreeItem<HostItem> netRootTreeItem = getNetRootTreeItem(dbService);
-        TreeItem<HostItem> localRootTreeItem = geLocalRootTreeItem(dbService);
+        TreeItem<HostItem> netRootTreeItem = getNetRootTreeItem(treeItems);
+        TreeItem<HostItem> localRootTreeItem = geLocalRootTreeItem(treeItems);
         root.getChildren().addAll(localRootTreeItem, netRootTreeItem);
         return root;
     }
 
-    private TreeItem<HostItem> geLocalRootTreeItem(SwitchHostService dbService) {
+    private TreeItem<HostItem> geLocalRootTreeItem(HostItems treeItems) {
         // 系统hosts
         HostItem localItem = new HostItem();
         localItem.setName(SwitchHostConstant.LOCAL);
         localItem.setType(HostItem.HostType.LOCAL);
         localItem.setParent(true);
         TreeItem<HostItem> systemHost = createTreeParentItem(localItem, FontAwesome.DESKTOP, 16);
-        List<HostItem> items = dbService.getItems(HostItem.HostType.LOCAL);
+        List<HostItem> items = treeItems.getItems(HostItem.HostType.LOCAL);
         if (ListUtils.isNotEmpty(items)) {
             for (HostItem item : items) {
                 TreeItem<HostItem> itemHost = createTreeLeafItem(item);
@@ -102,14 +109,14 @@ public class SwitchHostNavPane extends BorderPane {
         return new TreeItem<HostItem>(item, FontIconUtils.createIconButton(FontAwesome.FILE, 16));
     }
 
-    private TreeItem<HostItem> getNetRootTreeItem(SwitchHostService dbService) {
+    private TreeItem<HostItem> getNetRootTreeItem(HostItems treeItems) {
         // 网络hosts
         HostItem netItem = new HostItem();
         netItem.setType(HostItem.HostType.NET);
         netItem.setParent(true);
         netItem.setName(SwitchHostConstant.REMOTE);
         TreeItem<HostItem> netHost = createTreeParentItem(netItem, FontAwesome.GLOBE, 18);
-        List<HostItem> items = dbService.getItems(HostItem.HostType.NET);
+        List<HostItem> items = treeItems.getItems(HostItem.HostType.NET);
         if (ListUtils.isNotEmpty(items)) {
             for (HostItem item : items) {
                 TreeItem<HostItem> itemHost = createTreeLeafItem(item);
@@ -135,22 +142,37 @@ public class SwitchHostNavPane extends BorderPane {
         remove.setOnAction(event -> {
             TreeItem<HostItem> hostTreeItem = treeView.getSelectionModel().getSelectedItem();
             if (hostTreeItem != null) {
-                //TreeItem<HostItem> p = hostTreeItem.getParent();
-                //p.getChildren().remove(hostTreeItem);
-                HostItem hostItem = hostTreeItem.getValue();
-                if (!hostItem.isParent()) {
-                    removeHostItem(hostItem);
-                }
+                removeTreeItem(hostTreeItem);
             }
         });
         return remove;
     }
 
-    private void removeHostItem(HostItem hostItem) {
+    /**
+     * 删除叶子节点，并生成触发删除事件
+     *
+     * @param hostTreeItem
+     */
+    private void removeTreeItem(TreeItem<HostItem> hostTreeItem) {
 
-        LoggerFactory.getLogger().debug("remove host item {}",hostItem);
-        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, hostItem);
+        if (hostTreeItem == null) {
+            return;
+        }
+        HostItem item = hostTreeItem.getValue();
+        if (!item.isParent()) {
+            HostItem.HostType hostType = item.getType();
+            TreeItem<HostItem> parent = getTreeParentItemByType(hostType);
+            if (parent != null) {
+                parent.getChildren().remove(hostTreeItem);
+            }
+        }
+        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, item);
         fireEvent(addEvent);
+    }
+
+    private void removeTreeItem(HostItem hostItem) {
+
+        removeTreeItem(getTreeItemById(hostItem.getId()));
     }
 
     private Button createAddButton() {
@@ -167,13 +189,7 @@ public class SwitchHostNavPane extends BorderPane {
             JButton sure = new JButton("确定");
             sure.setOnAction(e -> {
                 HostItem item = switchHostAddPane.getItem();
-                HostItem.HostType hostType = item.getType();
-                TreeItem<HostItem> parent = getTreeParentItemByType(hostType);
-                if (parent != null) {
-                    parent.getChildren().add(createTreeLeafItem(item));
-                }
-                SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, item);
-                fireEvent(addEvent);
+                addTreeItem(item);
                 dialog.close();
             });
             cancel.setOnAction(e -> {
@@ -185,6 +201,39 @@ public class SwitchHostNavPane extends BorderPane {
             dialog.show();
         });
         return add;
+    }
+
+    /**
+     * 添加树节点，刷新树，同时生成事件进行通知，让父类监听器进行响应的操作
+     *
+     * @param item
+     */
+    private void addTreeItem(HostItem item) {
+
+        HostItem.HostType hostType = item.getType();
+        TreeItem<HostItem> parent = getTreeParentItemByType(hostType);
+        if (parent != null) {
+            item.setId(RandomStringUtils.randomAlphabetic(SwitchHostConstant.DEFAULT_ID_LENGTH));
+            parent.getChildren().add(createTreeLeafItem(item));
+        }
+        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, item);
+        fireEvent(addEvent);
+    }
+
+    private TreeItem<HostItem> getTreeItemById(String id) {
+
+        if (StringUtils.isNotEmpty(id)) {
+            ObservableList<TreeItem<HostItem>> childs = treeView.getRoot().getChildren();
+            for (TreeItem<HostItem> item : childs) {
+                for (TreeItem<HostItem> childItem : item.getChildren()) {
+                    HostItem hostItem = childItem.getValue();
+                    if (StringUtils.equals(hostItem.getId(), id)) {
+                        return childItem;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private TreeItem<HostItem> getTreeParentItemByType(HostItem.HostType type) {

@@ -35,7 +35,12 @@ public class SwitchHostConstant {
      */
     public static final String LOCAL = "Local";
 
+    /**
+     * 默认更新频率
+     */
     public static final List<String> UPDATE_FREQUENCY = Arrays.asList("手动", "0.5小时", "1小时", "2小时", "3小时",
                                                                       "4小时", "5小时", "6小时", "7小时",
                                                                       "8小时", "9小时", "10小时", "11小时", "12小时");
+
+    public static final int DEFAULT_ID_LENGTH=10;
 }

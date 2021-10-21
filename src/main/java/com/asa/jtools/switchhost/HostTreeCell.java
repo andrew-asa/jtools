@@ -34,7 +34,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
 
     private HBox operateBox;
 
-    private SwitchHostService switchHostService;
+    //private SwitchHostService switchHostService;
 
     private InvalidationListener treeItemGraphicInvalidationListener = observable -> updateDisplay(getItem(),
                                                                                                    isEmpty());
@@ -44,9 +44,9 @@ public class HostTreeCell extends TreeCell<HostItem> {
 
     private WeakReference<TreeItem<HostItem>> treeItemRef;
 
-    public HostTreeCell(SwitchHostService switchHostService, TreeView<HostItem> treeView) {
+    public HostTreeCell(TreeView<HostItem> treeView) {
 
-        this.switchHostService = switchHostService;
+        //this.switchHostService = switchHostService;
         this.treeView = treeView;
         final InvalidationListener treeItemInvalidationListener = observable -> {
             TreeItem<HostItem> oldTreeItem = treeItemRef == null ? null : treeItemRef.get();
@@ -109,9 +109,16 @@ public class HostTreeCell extends TreeCell<HostItem> {
             MenuItem refresh = new MenuItem("刷新");
             refresh.setOnAction(event -> {
                 System.out.println("刷新");
-                // TODO
             });
             contextMenu.getItems().add(refresh);
+            setContextMenu(contextMenu);
+        } else if (hostItem.isParent()) {
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem add = new MenuItem("添加子节点");
+            add.setOnAction(event -> {
+                System.out.println("添加");
+            });
+            contextMenu.getItems().add(add);
             setContextMenu(contextMenu);
         }
     }
