@@ -55,7 +55,7 @@ public class HostItem {
         /**
          * 网络
          */
-        NET,
+        Remote,
         /**
          * 根
          */

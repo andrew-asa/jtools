@@ -106,7 +106,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
     private void customContextMenu(HostItem hostItem) {
 
         HostItem.HostType type = hostItem.getType();
-        if (!hostItem.isParent() && HostItem.HostType.NET.equals(type)) {
+        if (!hostItem.isParent() && HostItem.HostType.Remote.equals(type)) {
             ContextMenu contextMenu = new ContextMenu();
             MenuItem refresh = new MenuItem("刷新");
             refresh.setOnAction(event -> {
@@ -185,6 +185,10 @@ public class HostTreeCell extends TreeCell<HostItem> {
             fireEvent(addEvent);
         });
         edit.setPrefWidth(30);
+        edit.setOnAction(e->{
+            SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_EDIT_EVENT, hostItem);
+            fireEvent(addEvent);
+        });
         hBox.getChildren().addAll(delete, edit);
         return hBox;
     }

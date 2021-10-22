@@ -29,6 +29,12 @@ public class SwitchHostEvent extends Event {
             new EventType<>(Event.ANY, "SWITCH_HOST_UPDATE_EVENT");
 
     /**
+     * 修改
+     */
+    public static final EventType<SwitchHostEvent> SWITCH_HOST_EDIT_EVENT =
+            new EventType<>(Event.ANY, "SWITCH_HOST_EDIT_EVENT");
+
+    /**
      * 刷新
      */
     public static final EventType<SwitchHostEvent> SWITCH_HOST_REFRESH_EVENT =

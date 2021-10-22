@@ -27,7 +27,9 @@ import org.controlsfx.control.PrefixSelectionChoiceBox;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,12 +65,72 @@ public class SwitchHostAddPane extends BorderPane {
         setTop(tabPane);
     }
 
-    public HostItem getItem() {
+    private HostItem getNetItemValue(HostItem oldItem) {
+
+        HostItem item = new HostItem();
+        item.setType(HostItem.HostType.Remote);
+        item.setName(netName.getText());
+        item.setPath(netUrl.getText());
+        Map configure = new HashMap<>();
+        configure.put(SwitchHostConstant.URL, netUrl.getText());
+        configure.put(SwitchHostConstant.FREQUENCY, netUpdateFrequency.getValue());
+        item.setConfigure(configure);
+        return item;
+    }
+
+    private HostItem getLocalItemValue(HostItem oldItem) {
+
+        HostItem item = new HostItem();
+        item.setType(HostItem.HostType.LOCAL);
+        item.setName(localName.getText());
+        return item;
+    }
+
+    private void setItem(HostItem item) {
+
+        if (item != null) {
+            HostItem.HostType type = item.getType();
+            if (HostItem.HostType.Remote.equals(type)) {
+                netName.setText(item.getName());
+                netUrl.setText(item.getPath());
+            } else if (HostItem.HostType.LOCAL.equals(type)) {
+                localName.setText(item.getName());
+            }
+            removeOtherAndSelectItemByType(type);
+        }
+    }
+
+    private void removeOtherAndSelectItemByType(HostItem.HostType type) {
+
+        Tab select = null;
+        List<Tab> remove = new ArrayList<>();
+        for (Tab tab : tabPane.getTabs()) {
+            if (StringUtils.equalsIgnoreCase(tab.getText(), type.name())) {
+                select = tab;
+            } else {
+                remove.add(tab);
+            }
+        }
+        tabPane.getTabs().removeAll(remove);
+        tabPane.getSelectionModel().select(select);
+    }
+
+    private Tab getTabByType(HostItem.HostType type) {
+
+        for (Tab tab : tabPane.getTabs()) {
+            if (StringUtils.equalsIgnoreCase(tab.getText(), type.name())) {
+                return tab;
+            }
+        }
+        return null;
+    }
+
+    public HostItem getItem(HostItem oldItem) {
 
         if (StringUtils.equals(tabPane.getSelectionModel().getSelectedItem().getText(), SwitchHostConstant.LOCAL)) {
-            return createLocalItemValue();
+            return getLocalItemValue(oldItem);
         } else {
-            return createNetItemValue();
+            return getNetItemValue(oldItem);
         }
     }
 
@@ -117,18 +179,6 @@ public class SwitchHostAddPane extends BorderPane {
         return root;
     }
 
-    private HostItem createNetItemValue() {
-
-        HostItem item = new HostItem();
-        item.setType(HostItem.HostType.NET);
-        item.setName(netName.getText());
-        Map configure = new HashMap<>();
-        configure.put(SwitchHostConstant.URL, netUrl.getText());
-        configure.put(SwitchHostConstant.FREQUENCY, netUpdateFrequency.getValue());
-        item.setConfigure(configure);
-        return item;
-    }
-
 
     private TextField localName;
 
@@ -149,17 +199,10 @@ public class SwitchHostAddPane extends BorderPane {
         return root;
     }
 
-    private HostItem createLocalItemValue() {
 
-        HostItem item = new HostItem();
-        item.setType(HostItem.HostType.LOCAL);
-        item.setName(localName.getText());
-        return item;
-    }
+    public void showDialog(StackPane rootStackPane, HostItem info) {
 
-
-    public void showDialog(StackPane rootStackPane) {
-
+        setItem(info);
         JFXDialogLayout content = new JFXDialogLayout();
         content.setHeading(new Text("添加hosts规则"));
         //SwitchHostAddPane switchHostAddPane = new SwitchHostAddPane();
@@ -169,8 +212,8 @@ public class SwitchHostAddPane extends BorderPane {
         JButton cancel = new JButton("取消");
         JButton sure = new JButton("确定");
         sure.setOnAction(e -> {
-            HostItem item = getItem();
-            addTreeItem(item);
+            HostItem item = getItem(info);
+            onSureAction(info, item);
             dialog.close();
         });
         cancel.setOnAction(e -> {
@@ -182,8 +225,15 @@ public class SwitchHostAddPane extends BorderPane {
         dialog.show();
     }
 
-    public void addTreeItem(HostItem item) {
-        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostAddPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, item);
+    /**
+     * 通知调用者
+     *
+     * @param oldItem
+     * @param newItem
+     */
+    protected void onSureAction(HostItem oldItem, HostItem newItem) {
+
+        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostAddPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, newItem);
         fireEvent(addEvent);
     }
 }

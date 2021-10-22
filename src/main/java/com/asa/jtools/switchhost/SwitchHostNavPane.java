@@ -1,5 +1,6 @@
 package com.asa.jtools.switchhost;
 
+import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
@@ -57,6 +58,10 @@ public class SwitchHostNavPane extends BorderPane {
             e.consume();
             removeTreeItem(e.getValue());
         });
+        treeView.addEventHandler(SwitchHostEvent.SWITCH_HOST_EDIT_EVENT, e -> {
+            e.consume();
+            editTreeItem(e.getValue());
+        });
         TreeItem<HostItem> root = getRootItem(treeItems);
         treeView.setRoot(root);
         treeView.setShowRoot(false);
@@ -106,11 +111,11 @@ public class SwitchHostNavPane extends BorderPane {
     private TreeItem<HostItem> getNetRootTreeItem(HostItems treeItems) {
         // 网络hosts
         HostItem netItem = new HostItem();
-        netItem.setType(HostItem.HostType.NET);
+        netItem.setType(HostItem.HostType.Remote);
         netItem.setParent(true);
         netItem.setName(SwitchHostConstant.REMOTE);
         TreeItem<HostItem> netHost = createTreeParentItem(netItem, FontAwesome.GLOBE, 18);
-        List<HostItem> items = treeItems.getItems(HostItem.HostType.NET);
+        List<HostItem> items = treeItems.getItems(HostItem.HostType.Remote);
         if (ListUtils.isNotEmpty(items)) {
             for (HostItem item : items) {
                 TreeItem<HostItem> itemHost = createTreeLeafItem(item);
@@ -174,27 +179,6 @@ public class SwitchHostNavPane extends BorderPane {
         removeTreeItem(getTreeItemById(hostItem.getId()));
     }
 
-    private Button createAddButton() {
-
-        Button add = FontIconUtils.createIconButton(FontAwesome.PLUS, 14);
-        add.setOnAction(event -> {
-            showAddDialog();
-        });
-        return add;
-    }
-
-    private void showAddDialog() {
-
-        showAddDialog(null);
-    }
-
-    private void showAddDialog(HostItem item) {
-
-        SwitchHostAddPane switchHostAddPane = new SwitchHostAddPane();
-        switchHostAddPane.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> addTreeItem(e.getValue()));
-        switchHostAddPane.showDialog(rootStackPane);
-    }
-
     /**
      * 添加树节点，刷新树，同时生成事件进行通知，让父类监听器进行响应的操作
      *
@@ -211,6 +195,46 @@ public class SwitchHostNavPane extends BorderPane {
         SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, item);
         fireEvent(addEvent);
     }
+
+    /**
+     * 修改样式
+     *
+     * @param hostItem
+     */
+    private void editTreeItem(HostItem hostItem) {
+
+        SwitchHostUpdatePane panel = new SwitchHostUpdatePane();
+        panel.addEventHandler(SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT, e -> updateTreeItem(e.getValue(), e.getOldValue()));
+        panel.showDialog(rootStackPane, hostItem);
+    }
+
+    private void updateTreeItem(HostItem newItem, HostItem oldItem) {
+
+        LoggerFactory.getLogger().debug("update {}  to {}", oldItem, newItem);
+    }
+
+
+    private Button createAddButton() {
+
+        Button add = FontIconUtils.createIconButton(FontAwesome.PLUS, 14);
+        add.setOnAction(event -> {
+            showAddDialog();
+        });
+        return add;
+    }
+
+    private void showAddDialog() {
+
+        showAddDialog(null);
+    }
+
+    private void showAddDialog(HostItem item) {
+
+        SwitchHostAddPane panel = new SwitchHostAddPane();
+        panel.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> addTreeItem(e.getValue()));
+        panel.showDialog(rootStackPane, item);
+    }
+
 
     private TreeItem<HostItem> getTreeItemById(String id) {
 
