@@ -1,8 +1,10 @@
 package com.asa.jtools.switchhost.bean;
 
 import com.asa.base.utils.MapUtils;
+import com.asa.base.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -13,7 +15,18 @@ import java.util.StringJoiner;
  */
 public class HostItems {
 
-    public Map<String,HostItem> itemMap;
+    public Map<String, HostItem> itemMap;
+
+    public HostItems() {
+
+        ensureItemMapNotNull();
+    }
+
+    public HostItems(Map<String, HostItem> itemMap) {
+
+        ensureItemMapNotNull();
+        MapUtils.safeAddToMap(this.itemMap, itemMap);
+    }
 
     public Map<String, HostItem> getItemMap() {
 
@@ -25,6 +38,33 @@ public class HostItems {
         this.itemMap = itemMap;
     }
 
+    private void ensureItemMapNotNull() {
+
+        if (itemMap == null) {
+            itemMap = new HashMap<>();
+        }
+    }
+
+    public void addItem(HostItem item) {
+
+        ensureItemMapNotNull();
+        if (item != null && StringUtils.isNotEmpty(item.getId())) {
+            MapUtils.safeAddToMap(itemMap, item.getId(), item);
+        }
+    }
+
+    public void removeItem(HostItem item) {
+
+        ensureItemMapNotNull();
+        if (item != null && StringUtils.isNotEmpty(item.getId())) {
+            MapUtils.remove(itemMap, item.getId());
+        }
+    }
+
+    public void updateItem(HostItem newItem, HostItem oldItem) {
+        addItem(newItem);
+    }
+
     public boolean existItem() {
 
         return MapUtils.isNotEmptyMap(itemMap);
@@ -34,11 +74,11 @@ public class HostItems {
 
         List<HostItem> ret = new ArrayList<>();
         if (type != null && MapUtils.isNotEmptyMap(itemMap)) {
-           itemMap.values().forEach(item->{
-               if (type.equals(item.getType())) {
-                   ret.add(item);
-               }
-           });
+            itemMap.values().forEach(item -> {
+                if (type.equals(item.getType())) {
+                    ret.add(item);
+                }
+            });
         }
         return ret;
     }

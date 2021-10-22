@@ -42,15 +42,14 @@ public class SwitchHostNavPane extends BorderPane {
 
         this.rootStackPane = rootStackPane;
         this.treeItems = items;
-        //this.dbService = dbService;
-        this.treeView = getTreeView();
+        this.treeView = createTreeView(items);
         treeView.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_CHILD_EVENT, e -> showAddDialog(e.getValue()));
         HBox bottom = createOperation();
         setBottom(bottom);
         setCenter(treeView);
     }
 
-    private TreeView getTreeView() {
+    private TreeView createTreeView(HostItems treeItems) {
 
         treeView = new TreeView<>();
         treeView.setCellFactory((TreeView<HostItem> p) -> new HostTreeCell(treeView));
@@ -62,21 +61,41 @@ public class SwitchHostNavPane extends BorderPane {
             e.consume();
             editTreeItem(e.getValue());
         });
-        TreeItem<HostItem> root = getRootItem(treeItems);
-        treeView.setRoot(root);
         treeView.setShowRoot(false);
-        root.setExpanded(true);
+        setTreeItems(treeItems);
         return treeView;
     }
 
-    private TreeItem<HostItem> getRootItem(HostItems treeItems) {
+    public void setTreeItems(HostItems treeItems) {
+
+        TreeItem<HostItem> root = createTreeRoot(treeItems);
+        root.setExpanded(true);
+        treeView.setRoot(root);
+    }
+
+    public HostItems getTreeItems() {
+
+        HostItems items = new HostItems();
+        TreeItem<HostItem> root = treeView.getRoot();
+        for (TreeItem<HostItem> parent : root.getChildren()) {
+            for (TreeItem<HostItem> item : parent.getChildren()) {
+                items.addItem(item.getValue());
+            }
+        }
+        return items;
+    }
+
+
+    private TreeItem<HostItem> createTreeRoot(HostItems treeItems) {
 
         HostItem rootItem = new HostItem();
-        rootItem.setName("Root");
+        rootItem.setName(SwitchHostConstant.ROOT);
         TreeItem<HostItem> root = new TreeItem<HostItem>(rootItem);
-        TreeItem<HostItem> netRootTreeItem = getNetRootTreeItem(treeItems);
-        TreeItem<HostItem> localRootTreeItem = geLocalRootTreeItem(treeItems);
-        root.getChildren().addAll(localRootTreeItem, netRootTreeItem);
+        if (treeItems != null) {
+            TreeItem<HostItem> netRootTreeItem = getRemoteRootTreeItem(treeItems);
+            TreeItem<HostItem> localRootTreeItem = geLocalRootTreeItem(treeItems);
+            root.getChildren().addAll(localRootTreeItem, netRootTreeItem);
+        }
         return root;
     }
 
@@ -108,7 +127,7 @@ public class SwitchHostNavPane extends BorderPane {
         return new TreeItem<HostItem>(item, FontIconUtils.createIconButton(FontAwesome.FILE, 16));
     }
 
-    private TreeItem<HostItem> getNetRootTreeItem(HostItems treeItems) {
+    private TreeItem<HostItem> getRemoteRootTreeItem(HostItems treeItems) {
         // 网络hosts
         HostItem netItem = new HostItem();
         netItem.setType(HostItem.HostType.Remote);

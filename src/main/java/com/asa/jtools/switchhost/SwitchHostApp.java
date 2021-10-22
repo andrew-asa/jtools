@@ -42,8 +42,13 @@ public class SwitchHostApp extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(e -> {
+            onClose();
             System.exit(0);
         });
+    }
+
+    private void onClose() {
+        switchHostService.destroy();
     }
 
     private void addNavListener(SwitchHostNavPane nav, SwitchHostService switchHostService) {

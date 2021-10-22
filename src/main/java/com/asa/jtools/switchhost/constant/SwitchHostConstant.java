@@ -25,6 +25,8 @@ public class SwitchHostConstant {
 
     public static final String FREQUENCY = "frequency";
 
+    public static final String ROOT = "Root";
+
     /**
      * 网络
      */

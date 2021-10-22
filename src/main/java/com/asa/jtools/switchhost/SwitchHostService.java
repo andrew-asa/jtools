@@ -173,6 +173,7 @@ public class SwitchHostService {
      */
     public void saveHostItems(HostItems items) {
 
+        LoggerFactory.getLogger().debug("save items {}", hostItems);
         saveObject(items, getDBFile());
     }
 
@@ -206,7 +207,6 @@ public class SwitchHostService {
         HostItem defaultHosts = new HostItem();
         defaultHosts.setType(HostItem.HostType.LOCAL);
         defaultHosts.setName(DEFAULT_HOSTS_ID);
-        //defaultHosts.setId(DEFAULT_HOSTS_ID);
         defaultHosts.setPath(FilenameUtils.concat(SwitchHostService.HOST_DIR, DEFAULT_HOSTS_ID));
         return defaultHosts;
     }
@@ -231,17 +231,27 @@ public class SwitchHostService {
 
     public void addItem(HostItem item) {
 
+        hostItems.addItem(item);
         LoggerFactory.getLogger().debug("add {}", item);
+        saveHostItems(hostItems);
     }
 
     public void removeItem(HostItem item) {
 
+        hostItems.removeItem(item);
         LoggerFactory.getLogger().debug("remove {}", item);
-
+        saveHostItems(hostItems);
     }
 
     public void updateItem(HostItem newItem, HostItem oldItem) {
 
+        hostItems.updateItem(newItem, oldItem);
         LoggerFactory.getLogger().debug("update {} to {}", oldItem, newItem);
+        saveHostItems(hostItems);
+    }
+
+    public void destroy() {
+
+        saveHostItems(hostItems);
     }
 }
