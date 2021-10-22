@@ -6,7 +6,6 @@ import com.asa.jtools.switchhost.bean.HostItem;
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -14,7 +13,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -91,10 +89,14 @@ public class HostTreeCell extends TreeCell<HostItem> {
                 HBox editBox = customEditButton(hostItem);
                 pane.setRight(operateBox);
                 pane.setOnMouseEntered(e -> {
-                    operateBox.getChildren().add(0, editBox);
+                    if (operateBox != null) {
+                        operateBox.getChildren().add(0, editBox);
+                    }
                 });
                 pane.setOnMouseExited(event -> {
-                    operateBox.getChildren().remove(editBox);
+                    if (operateBox != null) {
+                        operateBox.getChildren().remove(editBox);
+                    }
                 });
             }
             setGraphic(pane);
@@ -116,11 +118,17 @@ public class HostTreeCell extends TreeCell<HostItem> {
             ContextMenu contextMenu = new ContextMenu();
             MenuItem add = new MenuItem("添加子节点");
             add.setOnAction(event -> {
-                System.out.println("添加");
+                addChild(hostItem);
             });
             contextMenu.getItems().add(add);
             setContextMenu(contextMenu);
         }
+    }
+
+    private void addChild(HostItem hostItem) {
+
+        SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_ADD_CHILD_EVENT, hostItem);
+        fireEvent(addEvent);
     }
 
     private HBox customShowBox(TreeItem<HostItem> treeItem) {
@@ -155,7 +163,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
             Button button;
             if (apply) {
                 button = FontIconUtils.createIconButton(FontAwesome.TOGGLE_ON, Color.GREEN);
-                button.setOnAction(e->{
+                button.setOnAction(e -> {
 
                 });
             } else {
@@ -172,7 +180,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
         HBox hBox = new HBox();
         Button edit = FontIconUtils.createIconButton(FontAwesome.EDIT);
         Button delete = FontIconUtils.createIconButton(FontAwesome.TRASH);
-        delete.setOnAction(e->{
+        delete.setOnAction(e -> {
             SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, hostItem);
             fireEvent(addEvent);
         });

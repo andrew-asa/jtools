@@ -1,9 +1,12 @@
 package com.asa.jtools.switchhost;
 
+import com.asa.base.ui.controls.button.JButton;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +20,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import org.controlsfx.control.PrefixSelectionChoiceBox;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
@@ -145,6 +150,7 @@ public class SwitchHostAddPane extends BorderPane {
     }
 
     private HostItem createLocalItemValue() {
+
         HostItem item = new HostItem();
         item.setType(HostItem.HostType.LOCAL);
         item.setName(localName.getText());
@@ -152,9 +158,32 @@ public class SwitchHostAddPane extends BorderPane {
     }
 
 
-    //public void saveAdd() {
-    //
-    //    SwitchHostEvent event = new SwitchHostEvent(this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, "test");
-    //    fireEvent(event);
-    //}
+    public void showDialog(StackPane rootStackPane) {
+
+        JFXDialogLayout content = new JFXDialogLayout();
+        content.setHeading(new Text("添加hosts规则"));
+        //SwitchHostAddPane switchHostAddPane = new SwitchHostAddPane();
+        content.setBody(this);
+        content.setPrefSize(600, 400);
+        JFXDialog dialog = new JFXDialog(rootStackPane, content, JFXDialog.DialogTransition.LEFT, true);
+        JButton cancel = new JButton("取消");
+        JButton sure = new JButton("确定");
+        sure.setOnAction(e -> {
+            HostItem item = getItem();
+            addTreeItem(item);
+            dialog.close();
+        });
+        cancel.setOnAction(e -> {
+            dialog.close();
+        });
+        cancel.setButtonLevel(JButton.ButtonLevel.IGNORE);
+        sure.setButtonLevel(JButton.ButtonLevel.SUCCESS);
+        content.setActions(cancel, sure);
+        dialog.show();
+    }
+
+    public void addTreeItem(HostItem item) {
+        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostAddPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, item);
+        fireEvent(addEvent);
+    }
 }

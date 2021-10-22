@@ -1,7 +1,5 @@
 package com.asa.jtools.switchhost;
 
-import com.asa.base.log.LoggerFactory;
-import com.asa.base.ui.controls.button.JButton;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
@@ -9,8 +7,6 @@ import com.asa.jtools.base.utils.RandomStringUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.bean.HostItems;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
@@ -18,7 +14,6 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 
@@ -36,8 +31,6 @@ public class SwitchHostNavPane extends BorderPane {
 
     private HostItems treeItems;
 
-    //private SwitchHostService dbService;
-
     public SwitchHostNavPane(StackPane rootStackPane, HostItems treeItems) {
 
         super();
@@ -50,6 +43,7 @@ public class SwitchHostNavPane extends BorderPane {
         this.treeItems = items;
         //this.dbService = dbService;
         this.treeView = getTreeView();
+        treeView.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_CHILD_EVENT, e -> showAddDialog(e.getValue()));
         HBox bottom = createOperation();
         setBottom(bottom);
         setCenter(treeView);
@@ -141,11 +135,16 @@ public class SwitchHostNavPane extends BorderPane {
         Button remove = FontIconUtils.createIconButton(FontAwesome.MINUS, 14);
         remove.setOnAction(event -> {
             TreeItem<HostItem> hostTreeItem = treeView.getSelectionModel().getSelectedItem();
-            if (hostTreeItem != null) {
+            if (isHostItemLeaf(hostTreeItem)) {
                 removeTreeItem(hostTreeItem);
             }
         });
         return remove;
+    }
+
+    private boolean isHostItemLeaf(TreeItem<HostItem> hostTreeItem) {
+
+        return hostTreeItem != null && !hostTreeItem.getValue().isParent();
     }
 
     /**
@@ -179,28 +178,21 @@ public class SwitchHostNavPane extends BorderPane {
 
         Button add = FontIconUtils.createIconButton(FontAwesome.PLUS, 14);
         add.setOnAction(event -> {
-            JFXDialogLayout content = new JFXDialogLayout();
-            content.setHeading(new Text("添加hosts规则"));
-            SwitchHostAddPane switchHostAddPane = new SwitchHostAddPane();
-            content.setBody(switchHostAddPane);
-            content.setPrefSize(600, 400);
-            JFXDialog dialog = new JFXDialog(rootStackPane, content, JFXDialog.DialogTransition.LEFT, true);
-            JButton cancel = new JButton("取消");
-            JButton sure = new JButton("确定");
-            sure.setOnAction(e -> {
-                HostItem item = switchHostAddPane.getItem();
-                addTreeItem(item);
-                dialog.close();
-            });
-            cancel.setOnAction(e -> {
-                dialog.close();
-            });
-            cancel.setButtonLevel(JButton.ButtonLevel.IGNORE);
-            sure.setButtonLevel(JButton.ButtonLevel.SUCCESS);
-            content.setActions(cancel, sure);
-            dialog.show();
+            showAddDialog();
         });
         return add;
+    }
+
+    private void showAddDialog() {
+
+        showAddDialog(null);
+    }
+
+    private void showAddDialog(HostItem item) {
+
+        SwitchHostAddPane switchHostAddPane = new SwitchHostAddPane();
+        switchHostAddPane.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> addTreeItem(e.getValue()));
+        switchHostAddPane.showDialog(rootStackPane);
     }
 
     /**

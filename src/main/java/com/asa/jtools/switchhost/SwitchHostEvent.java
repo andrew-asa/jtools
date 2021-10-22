@@ -34,6 +34,12 @@ public class SwitchHostEvent extends Event {
     public static final EventType<SwitchHostEvent> SWITCH_HOST_REFRESH_EVENT =
             new EventType<>(Event.ANY, "SWITCH_HOST_REFRESH_EVENT");
 
+    /**
+     * 父节点请求添加叶子节点
+     */
+    public static final EventType<SwitchHostEvent> SWITCH_HOST_ADD_CHILD_EVENT =
+            new EventType<>(Event.ANY, "SWITCH_HOST_ADD_CHILD_EVENT");
+
     private HostItem value;
 
     private HostItem oldValue;
