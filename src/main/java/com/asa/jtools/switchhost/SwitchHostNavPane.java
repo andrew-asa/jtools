@@ -210,6 +210,8 @@ public class SwitchHostNavPane extends BorderPane {
 
     private void updateTreeItem(HostItem newItem, HostItem oldItem) {
 
+        TreeItem<HostItem> treeItem = getTreeItemById(oldItem.getId());
+        treeItem.setValue(newItem);
         LoggerFactory.getLogger().debug("update {}  to {}", oldItem, newItem);
     }
 

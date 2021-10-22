@@ -1,6 +1,8 @@
 package com.asa.jtools.switchhost.bean;
 
 import com.asa.base.lang.builder.EqualsBuilder;
+import com.asa.base.utils.MapUtils;
+import com.asa.base.utils.ObjectUtils;
 
 import java.util.Map;
 import java.util.StringJoiner;
@@ -25,8 +27,9 @@ public class HostItem {
      * 类型
      */
     private HostType type;
+
     /**
-     *路径
+     * 路径
      */
     private String path;
 
@@ -38,7 +41,7 @@ public class HostItem {
     /**
      * 配置
      */
-    private Map<String,String> configure;
+    private Map<String, String> configure;
 
     /**
      * 是否启用
@@ -90,6 +93,11 @@ public class HostItem {
     public void setConfigure(Map<String, String> configure) {
 
         this.configure = configure;
+    }
+
+    public String getConfigureByKey(String key) {
+
+        return MapUtils.get(configure, key);
     }
 
 

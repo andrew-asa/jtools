@@ -65,37 +65,61 @@ public class SwitchHostAddPane extends BorderPane {
         setTop(tabPane);
     }
 
-    private HostItem getNetItemValue(HostItem oldItem) {
-
-        HostItem item = new HostItem();
-        item.setType(HostItem.HostType.Remote);
-        item.setName(netName.getText());
-        item.setPath(netUrl.getText());
-        Map configure = new HashMap<>();
-        configure.put(SwitchHostConstant.URL, netUrl.getText());
-        configure.put(SwitchHostConstant.FREQUENCY, netUpdateFrequency.getValue());
-        item.setConfigure(configure);
-        return item;
-    }
 
     private HostItem getLocalItemValue(HostItem oldItem) {
 
         HostItem item = new HostItem();
         item.setType(HostItem.HostType.LOCAL);
         item.setName(localName.getText());
+        if (oldItem != null) {
+            item.setId(oldItem.getId());
+        }
         return item;
     }
 
+    private HostItem getRemoteItemValue(HostItem oldItem) {
+
+        HostItem item = new HostItem();
+        item.setType(HostItem.HostType.Remote);
+        item.setName(netName.getText());
+        item.setPath(netUrl.getText());
+        Map configure = new HashMap<>();
+        //configure.put(SwitchHostConstant.URL, netUrl.getText());
+        configure.put(SwitchHostConstant.FREQUENCY, netUpdateFrequency.getValue());
+        item.setConfigure(configure);
+        if (oldItem != null) {
+            item.setId(oldItem.getId());
+        }
+        return item;
+    }
+
+    private void setRemoteItemValue(HostItem item) {
+
+        if (item != null && HostItem.HostType.Remote.equals(item.getType())) {
+            netName.setText(item.getName());
+            netUrl.setText(item.getPath());
+            String frequency = item.getConfigureByKey(SwitchHostConstant.FREQUENCY);
+            if (StringUtils.isNotEmpty(frequency)) {
+                netUpdateFrequency.setValue(frequency);
+            }
+        }
+    }
+
+    private void setLocalItemValue(HostItem item) {
+
+        if (item != null && HostItem.HostType.LOCAL.equals(item.getType())) {
+            localName.setText(item.getName());
+        }
+    }
+
+
     private void setItem(HostItem item) {
 
+        setRemoteItemValue(item);
         if (item != null) {
             HostItem.HostType type = item.getType();
-            if (HostItem.HostType.Remote.equals(type)) {
-                netName.setText(item.getName());
-                netUrl.setText(item.getPath());
-            } else if (HostItem.HostType.LOCAL.equals(type)) {
-                localName.setText(item.getName());
-            }
+            setRemoteItemValue(item);
+            setLocalItemValue(item);
             removeOtherAndSelectItemByType(type);
         }
     }
@@ -130,7 +154,7 @@ public class SwitchHostAddPane extends BorderPane {
         if (StringUtils.equals(tabPane.getSelectionModel().getSelectedItem().getText(), SwitchHostConstant.LOCAL)) {
             return getLocalItemValue(oldItem);
         } else {
-            return getNetItemValue(oldItem);
+            return getRemoteItemValue(oldItem);
         }
     }
 
