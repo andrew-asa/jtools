@@ -55,6 +55,7 @@ public class SwitchHostApp extends Application {
 
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> switchHostService.addItem(e.getValue()));
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, e -> switchHostService.removeItem(e.getValue()));
+        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT, e -> switchHostService.updateItem(e.getValue(),e.getOldValue()));
     }
 
     public void init() throws Exception {

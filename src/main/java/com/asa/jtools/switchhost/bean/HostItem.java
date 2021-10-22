@@ -151,6 +151,20 @@ public class HostItem {
         this.parent = parent;
     }
 
+
+
+    public HostItem clone() {
+        HostItem item = new HostItem();
+        item.setId(id);
+        item.setName(name);
+        item.setType(type);
+        item.setPath(path);
+        item.setConfigure(configure);
+        item.setContent(content);
+        item.setApply(apply);
+        return item;
+    }
+
     @Override
     public String toString() {
 
@@ -159,6 +173,7 @@ public class HostItem {
                 .add("name=" + name)
                 .add("type=" + type)
                 .add("path='" + path + "'")
+                .add("apply='" + apply + "'")
                 .add("configure=" + configure)
                 .toString();
     }

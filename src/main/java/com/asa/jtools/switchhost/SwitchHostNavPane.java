@@ -61,6 +61,11 @@ public class SwitchHostNavPane extends BorderPane {
             e.consume();
             editTreeItem(e.getValue());
         });
+        // 开关按钮
+        treeView.addEventHandler(SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT, e -> {
+            e.consume();
+            updateTreeItem(e.getValue(),e.getOldValue());
+        });
         treeView.setShowRoot(false);
         setTreeItems(treeItems);
         return treeView;
@@ -228,10 +233,12 @@ public class SwitchHostNavPane extends BorderPane {
     }
 
     private void updateTreeItem(HostItem newItem, HostItem oldItem) {
-
+        // 修改树
         TreeItem<HostItem> treeItem = getTreeItemById(oldItem.getId());
         treeItem.setValue(newItem);
-        LoggerFactory.getLogger().debug("update {}  to {}", oldItem, newItem);
+       // 继续往上传
+        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, newItem,oldItem);
+        fireEvent(addEvent);
     }
 
 

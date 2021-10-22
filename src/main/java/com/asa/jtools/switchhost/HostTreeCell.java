@@ -163,13 +163,18 @@ public class HostTreeCell extends TreeCell<HostItem> {
             Button button;
             if (apply) {
                 button = FontIconUtils.createIconButton(FontAwesome.TOGGLE_ON, Color.GREEN);
-                button.setOnAction(e -> {
-
-                });
             } else {
                 button = FontIconUtils.createIconButton(FontAwesome.TOGGLE_OFF);
             }
             button.setPrefWidth(30);
+            button.setOnAction(e -> {
+                HostItem newItem = hostItem.clone();
+                newItem.setApply(!hostItem.isApply());
+                SwitchHostEvent event = new SwitchHostEvent(HostTreeCell.this,
+                                                            SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT,
+                                                            newItem, hostItem);
+                fireEvent(event);
+            });
             hBox.getChildren().addAll(button);
         }
         return hBox;
@@ -185,7 +190,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
             fireEvent(addEvent);
         });
         edit.setPrefWidth(30);
-        edit.setOnAction(e->{
+        edit.setOnAction(e -> {
             SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_EDIT_EVENT, hostItem);
             fireEvent(addEvent);
         });

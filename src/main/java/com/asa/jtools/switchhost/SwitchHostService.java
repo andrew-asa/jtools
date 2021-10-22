@@ -246,7 +246,7 @@ public class SwitchHostService {
     public void updateItem(HostItem newItem, HostItem oldItem) {
 
         hostItems.updateItem(newItem, oldItem);
-        LoggerFactory.getLogger().debug("update {} to {}", oldItem, newItem);
+        LoggerFactory.getLogger().debug("db update {} to {}", oldItem, newItem);
         saveHostItems(hostItems);
     }
 
