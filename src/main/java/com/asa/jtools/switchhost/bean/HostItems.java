@@ -1,7 +1,10 @@
 package com.asa.jtools.switchhost.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.asa.base.utils.MapUtils;
 import com.asa.base.utils.StringUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +73,7 @@ public class HostItems {
         return MapUtils.isNotEmptyMap(itemMap);
     }
 
+    @JSONField(serialize=false)
     public List<HostItem> getItems(HostItem.HostType type) {
 
         List<HostItem> ret = new ArrayList<>();
@@ -81,6 +85,30 @@ public class HostItems {
             });
         }
         return ret;
+    }
+
+    @JsonIgnore
+    public HostItem getApplyItem() {
+        if ( MapUtils.isNotEmptyMap(itemMap)) {
+            for (HostItem item : itemMap.values()) {
+                if (item.isApply()) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    @JsonIgnore
+    public String getApplyId() {
+        if ( MapUtils.isNotEmptyMap(itemMap)) {
+            for (HostItem item : itemMap.values()) {
+                if (item.isApply()) {
+                    return item.getId();
+                }
+            }
+        }
+        return null;
     }
 
 

@@ -1,6 +1,6 @@
 package com.asa.jtools.switchhost;
 
-import com.asa.base.log.LoggerFactory;
+import com.asa.base.ui.controls.button.JButton;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
@@ -8,8 +8,11 @@ import com.asa.jtools.base.utils.RandomStringUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.bean.HostItems;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialogLayout;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
@@ -64,7 +67,7 @@ public class SwitchHostNavPane extends BorderPane {
         // 开关按钮
         treeView.addEventHandler(SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT, e -> {
             e.consume();
-            updateTreeItem(e.getValue(),e.getOldValue());
+            updateTreeItem(e.getValue(), e.getOldValue());
         });
         treeView.setShowRoot(false);
         setTreeItems(treeItems);
@@ -234,11 +237,63 @@ public class SwitchHostNavPane extends BorderPane {
 
     private void updateTreeItem(HostItem newItem, HostItem oldItem) {
         // 修改树
+        // 在这里判断是否可以应用
+        if (newItem.isApply() != oldItem.isApply()) {
+            if (buttonSwitchTest(newItem, oldItem)) {
+                doUpdateTreeItem(newItem, oldItem);
+            }
+        } else {
+            // 不是修改开关直接进行修改
+            doUpdateTreeItem(newItem, oldItem);
+        }
+    }
+
+    private void doUpdateTreeItem(HostItem newItem, HostItem oldItem) {
+
         TreeItem<HostItem> treeItem = getTreeItemById(oldItem.getId());
         treeItem.setValue(newItem);
-       // 继续往上传
-        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, newItem,oldItem);
+        // 继续往上传
+        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, newItem, oldItem);
         fireEvent(addEvent);
+    }
+
+    private boolean buttonSwitchTest(HostItem newItem, HostItem oldItem) {
+        // 只有是新打开同时新打开的不是正在应用的时候才需要显示对话框
+        if (newItem.isApply()) {
+            // 打开按钮
+            HostItem current = treeItems.getApplyItem();
+            if (current != null && StringUtils.isNotEmpty(current.getId())) {
+                boolean checkResult = alertCheck();
+                if (checkResult) {
+                    //    需要关闭上一个已经打开的按钮
+                    HostItem currentNew = current.clone();
+                    currentNew.setApply(false);
+                    updateTreeItem(currentNew,current);
+                }
+                return checkResult;
+            }
+        }
+        return true;
+    }
+
+    private boolean alertCheck() {
+        //    存在打开按钮则进行提示
+        JFXAlert<Boolean> alert = new JFXAlert(SwitchHostApp.getStage());
+        JFXDialogLayout layout = new JFXDialogLayout();
+        layout.setBody(new Label("存在正在使用的hosts,是否关闭"));
+        alert.setContent(layout);
+        JButton sure = new JButton("确定");
+        JButton cancel = new JButton("取消");
+        sure.setOnAction(se -> {
+            alert.setResult(true);
+            alert.hideWithAnimation();
+        });
+        cancel.setOnAction(se -> {
+            alert.setResult(false);
+            alert.hideWithAnimation();
+        });
+        layout.setActions(sure, cancel);
+        return alert.showAndWait().get();
     }
 
 

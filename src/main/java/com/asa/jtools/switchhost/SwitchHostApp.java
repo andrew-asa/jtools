@@ -24,9 +24,21 @@ public class SwitchHostApp extends Application {
 
     private SwitchHostEditPane edit;
 
+    private static Stage stage;
+
+    public static Stage getStage() {
+
+        return stage;
+    }
+
+    public static void setStage(Stage stage) {
+
+        SwitchHostApp.stage = stage;
+    }
+
     @Override
     public void start(Stage stage) {
-
+        setStage(stage);
         stackPane = new StackPane();
         borderPane = new BorderPane();
         HostItems items = switchHostService.getHostItems();

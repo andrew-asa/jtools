@@ -145,7 +145,7 @@ public class SwitchHostService {
         try {
             return objectMapper.readValue(file, valueType);
         } catch (Exception e) {
-            LoggerFactory.getLogger().error("error read {}", file.getAbsolutePath());
+            LoggerFactory.getLogger().error(e,"error read {}", file.getAbsolutePath());
         }
         return null;
     }

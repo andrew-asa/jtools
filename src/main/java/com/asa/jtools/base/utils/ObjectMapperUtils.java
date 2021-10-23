@@ -1,5 +1,6 @@
 package com.asa.jtools.base.utils;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -9,6 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ObjectMapperUtils {
 
     private static ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
+
+    static {
+        DEFAULT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     public static ObjectMapper getDefaultMapper() {
 

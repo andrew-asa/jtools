@@ -152,8 +152,8 @@ public class HostItem {
     }
 
 
-
     public HostItem clone() {
+
         HostItem item = new HostItem();
         item.setId(id);
         item.setName(name);
@@ -182,7 +182,7 @@ public class HostItem {
     public boolean equals(Object o) {
 
         if (this == o) return true;
-
+        if (o == null) return false;
         if (!(o instanceof HostItem)) return false;
 
         HostItem item = (HostItem) o;
