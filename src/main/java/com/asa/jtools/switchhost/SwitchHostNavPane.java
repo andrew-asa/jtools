@@ -1,18 +1,15 @@
 package com.asa.jtools.switchhost;
 
-import com.asa.base.ui.controls.button.JButton;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
+import com.asa.jtools.base.utils.Message;
 import com.asa.jtools.base.utils.RandomStringUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.bean.HostItems;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
-import com.jfoenix.controls.JFXAlert;
-import com.jfoenix.controls.JFXDialogLayout;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
@@ -263,7 +260,7 @@ public class SwitchHostNavPane extends BorderPane {
             // 打开按钮
             HostItem current = treeItems.getApplyItem();
             if (current != null && StringUtils.isNotEmpty(current.getId())) {
-                boolean checkResult = alertCheck();
+                boolean checkResult = Message.confirm(SwitchHostApp.getStage(), "存在正在使用的hosts,是否关闭");
                 if (checkResult) {
                     //    需要关闭上一个已经打开的按钮
                     HostItem currentNew = current.clone();
@@ -275,27 +272,6 @@ public class SwitchHostNavPane extends BorderPane {
         }
         return true;
     }
-
-    private boolean alertCheck() {
-        //    存在打开按钮则进行提示
-        JFXAlert<Boolean> alert = new JFXAlert(SwitchHostApp.getStage());
-        JFXDialogLayout layout = new JFXDialogLayout();
-        layout.setBody(new Label("存在正在使用的hosts,是否关闭"));
-        alert.setContent(layout);
-        JButton sure = new JButton("确定");
-        JButton cancel = new JButton("取消");
-        sure.setOnAction(se -> {
-            alert.setResult(true);
-            alert.hideWithAnimation();
-        });
-        cancel.setOnAction(se -> {
-            alert.setResult(false);
-            alert.hideWithAnimation();
-        });
-        layout.setActions(sure, cancel);
-        return alert.showAndWait().get();
-    }
-
 
     private Button createAddButton() {
 
