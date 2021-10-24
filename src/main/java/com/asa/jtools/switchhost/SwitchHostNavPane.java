@@ -3,6 +3,7 @@ package com.asa.jtools.switchhost;
 import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
+import com.asa.jtools.base.service.JToolsService;
 import com.asa.jtools.base.utils.FontIconUtils;
 import com.asa.jtools.base.utils.Message;
 import com.asa.jtools.base.utils.RandomStringUtils;
@@ -291,7 +292,7 @@ public class SwitchHostNavPane extends BorderPane {
             // 打开按钮
             HostItem current = treeItems.getApplyItem();
             if (current != null && StringUtils.isNotEmpty(current.getId())) {
-                boolean checkResult = Message.confirm(SwitchHostApp.getStage(), "存在正在使用的hosts,是否关闭");
+                boolean checkResult = Message.confirm(JToolsService.getStage(), "存在正在使用的hosts,是否关闭");
                 if (checkResult) {
                     //    需要关闭上一个已经打开的按钮
                     HostItem currentNew = current.clone();

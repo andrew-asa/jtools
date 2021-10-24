@@ -1,6 +1,7 @@
 package com.asa.jtools.switchhost;
 
 import com.asa.base.utils.StringUtils;
+import com.asa.jtools.base.service.JToolsService;
 import com.asa.jtools.base.utils.FontIconUtils;
 import com.asa.jtools.base.utils.Message;
 import com.asa.jtools.switchhost.bean.HostItem;
@@ -192,7 +193,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
         Button edit = FontIconUtils.createIconButton(FontAwesome.EDIT);
         Button delete = FontIconUtils.createIconButton(FontAwesome.TRASH);
         delete.setOnAction(e -> {
-            Message.sureConfirm(SwitchHostApp.getStage(), "是否真的删除", de -> {
+            Message.sureConfirm(JToolsService.getStage(), "是否真的删除", de -> {
                 SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, hostItem);
                 fireEvent(addEvent);
             });
