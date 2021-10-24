@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.asa.tools</groupId>
-    <artifactId>jtools</artifactId>
+    <groupId>com.asa</groupId>
+    <artifactId>com.asa.jtools</artifactId>
     <version>1.0-SNAPSHOT</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -83,11 +83,11 @@
             <artifactId>com.asa.base</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>com.asa</groupId>
-            <artifactId>com.asa.third.all</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.asa</groupId>-->
+<!--            <artifactId>com.asa.third.all</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.asa</groupId>
             <artifactId>com.asa.base.ui</artifactId>
@@ -162,18 +162,33 @@
     </dependencies>
     <build>
         <plugins>
+<!--            <plugin>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash;这部分可有可无,加上的话则直接生成可运行jar包&ndash;&gt;-->
+<!--                    &lt;!&ndash;<archive>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<manifest>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<mainClass>${exec.mainClass}</mainClass>&ndash;&gt;-->
+<!--                    &lt;!&ndash;</manifest>&ndash;&gt;-->
+<!--                    &lt;!&ndash;</archive>&ndash;&gt;-->
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
                 <configuration>
-                    <!--这部分可有可无,加上的话则直接生成可运行jar包-->
-                    <!--<archive>-->
-                    <!--<manifest>-->
-                    <!--<mainClass>${exec.mainClass}</mainClass>-->
-                    <!--</manifest>-->
-                    <!--</archive>-->
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <archive>
+                        <!-- 不打包依赖的jar,把依赖的jar copy到lib目录，和生成的jar放在同一级目录下 -->
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+<!--                            <mainClass>com.test.m2.me_demo.TestMain</mainClass>-->
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

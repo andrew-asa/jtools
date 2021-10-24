@@ -10,6 +10,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.nio.file.AccessDeniedException;
+
 
 /**
  * @author andrew_asa
@@ -88,7 +90,7 @@ public class SwitchHostApp extends Application {
         switchHostService.updateItem(newItem, oldItem);
         //
         if (switchHostService.isApplyItem(newItem, oldItem)) {
-            switchHostService.replaceSystemHostsContent(switchHostService.getContent(newItem));
+            replaceSystemHostsContent(switchHostService.getContent(newItem));
         }
     }
 
@@ -108,7 +110,18 @@ public class SwitchHostApp extends Application {
         switchHostService.saveContent(item, content);
         //  是否应用
         if (switchHostService.isAvailableItem(item) && item.isApply()) {
+            replaceSystemHostsContent(content);
+        }
+    }
+
+    public void replaceSystemHostsContent(String content){
+
+        try {
             switchHostService.replaceSystemHostsContent(content);
+        } catch (AccessDeniedException e) {
+            // 无法访问文件，无法替换/etc/hosts文件
+        } catch (Exception e2) {
+
         }
     }
 

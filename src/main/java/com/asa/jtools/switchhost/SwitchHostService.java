@@ -270,7 +270,7 @@ public class SwitchHostService {
      *
      * @param content
      */
-    public void replaceSystemHostsContent(String content) {
+    public void replaceSystemHostsContent(String content) throws Exception{
         //  替换/ect/hosts文件内容
         String path = SwitchHostService.SYSTEM_HOSTS_PATH;
         //String path = "/Users/andrew_asa/.jtools/switchhost/hosttemp";
@@ -279,12 +279,13 @@ public class SwitchHostService {
             FileUtils.stringSaveToSystemFilePath(content, path);
         } catch (Exception e) {
             LoggerFactory.getLogger().error(e, "error replace system hosts content");
+            throw e;
         }
     }
 
     public void saveContent(HostItem item, String content) {
 
-        LoggerFactory.getLogger().debug("saveContent {} ", item);
+        LoggerFactory.getLogger().debug("saveContent {} \n {}", item,content);
         if (itemExist(item)) {
             updateContent(item, content);
             String path = getHostsPath(item.getId());

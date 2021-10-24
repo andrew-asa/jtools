@@ -8,6 +8,7 @@ import com.asa.base.utils.io.FilenameUtils;
  */
 public class JToolsConstant {
 
-    public static final String DB_BASE_PATH = FilenameUtils.concat(System.getProperty("user.home"), ".jtools/");
+    //public static final String DB_BASE_PATH = FilenameUtils.concat(System.getProperty("user.home"), ".jtools/");
+    public static final String DB_BASE_PATH = FilenameUtils.concat("/Users/andrew_asa", ".jtools/");
 
 }
