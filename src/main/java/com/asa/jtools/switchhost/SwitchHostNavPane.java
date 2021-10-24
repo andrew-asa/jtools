@@ -281,7 +281,7 @@ public class SwitchHostNavPane extends BorderPane {
         TreeItem<HostItem> treeItem = getTreeItemById(oldItem.getId());
         treeItem.setValue(newItem);
         // 继续往上传
-        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_ADD_EVENT, newItem, oldItem);
+        SwitchHostEvent addEvent = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT, newItem, oldItem);
         fireEvent(addEvent);
     }
 

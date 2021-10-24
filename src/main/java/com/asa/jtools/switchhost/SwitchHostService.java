@@ -11,6 +11,7 @@ import com.asa.jtools.switchhost.bean.HostItems;
 import com.asa.jtools.switchhost.bean.SwitchHostSettings;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -177,7 +178,7 @@ public class SwitchHostService {
      */
     public void saveHostItems(HostItems items) {
 
-        LoggerFactory.getLogger().debug("save items {}", hostItems);
+        //LoggerFactory.getLogger().debug("save items {}", hostItems);
         saveObject(items, getDBFile());
     }
 
@@ -250,7 +251,7 @@ public class SwitchHostService {
     public void updateItem(HostItem newItem, HostItem oldItem) {
 
         hostItems.updateItem(newItem, oldItem);
-        LoggerFactory.getLogger().debug("db update {} to {}", oldItem, newItem);
+        //LoggerFactory.getLogger().debug("db update {} to {}", oldItem, newItem);
         saveHostItems(hostItems);
     }
 
@@ -262,6 +263,23 @@ public class SwitchHostService {
     private boolean itemExist(HostItem item) {
 
         return item != null && StringUtils.isNotEmpty(item.getId());
+    }
+
+    /**
+     * 替换/ect/hosts 内容
+     *
+     * @param content
+     */
+    public void replaceSystemHostsContent(String content) {
+        //  替换/ect/hosts文件内容
+        String path = SwitchHostService.SYSTEM_HOSTS_PATH;
+        //String path = "/Users/andrew_asa/.jtools/switchhost/hosttemp";
+        try {
+            LoggerFactory.getLogger().debug("replace system hosts content \n{}",content);
+            FileUtils.stringSaveToSystemFilePath(content, path);
+        } catch (Exception e) {
+            LoggerFactory.getLogger().error(e, "error replace system hosts content");
+        }
     }
 
     public void saveContent(HostItem item, String content) {
@@ -325,5 +343,23 @@ public class SwitchHostService {
     public boolean isRemoteType(HostItem item) {
 
         return item != null && HostItem.HostType.Remote.equals(item.getType());
+    }
+
+    public boolean isAvailableItem(HostItem item) {
+
+        return item != null && StringUtils.isNotEmpty(item.getId());
+    }
+
+    /**
+     * 是否是应用host规则
+     * @param newItem
+     * @param oldItem
+     * @return
+     */
+    public boolean isApplyItem(HostItem newItem, HostItem oldItem) {
+
+        return isAvailableItem(newItem) &&
+                isAvailableItem(oldItem) &&
+                newItem.isApply() && !oldItem.isApply();
     }
 }

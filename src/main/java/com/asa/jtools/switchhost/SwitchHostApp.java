@@ -10,8 +10,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.rmi.Remote;
-
 
 /**
  * @author andrew_asa
@@ -73,16 +71,25 @@ public class SwitchHostApp extends Application {
 
     private void addEditListener(SwitchHostEditPane edit, SwitchHostService switchHostService) {
 
-        edit.addEventHandler(SwitchHostEvent.SWITCH_HOST_SAVE_EVENT, e -> switchHostService.saveContent(e.getValue(), e.getContent()));
+        edit.addEventHandler(SwitchHostEvent.SWITCH_HOST_SAVE_EVENT, e -> saveContent(e.getValue(), e.getContent()));
     }
 
     private void addNavListener(SwitchHostNavPane nav, SwitchHostService switchHostService) {
 
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_ADD_EVENT, e -> switchHostService.addItem(e.getValue()));
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, e -> switchHostService.removeItem(e.getValue()));
-        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT, e -> switchHostService.updateItem(e.getValue(), e.getOldValue()));
+        nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_UPDATE_EVENT, e -> updateItem(e.getValue(), e.getOldValue()));
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_SELECT_EVENT, e -> selectHostItem(e.getOldValue(), e.getValue()));
         nav.addEventHandler(SwitchHostEvent.SWITCH_HOST_REFRESH_REMOTE, e -> refreshRemoteItem(e.getValue()));
+    }
+
+    public void updateItem(HostItem newItem, HostItem oldItem) {
+
+        switchHostService.updateItem(newItem, oldItem);
+        //
+        if (switchHostService.isApplyItem(newItem, oldItem)) {
+            switchHostService.replaceSystemHostsContent(switchHostService.getContent(newItem));
+        }
     }
 
     private void refreshRemoteItem(HostItem item) {
@@ -91,8 +98,17 @@ public class SwitchHostApp extends Application {
             String content = switchHostService.getRemoteContent(item);
             LoggerFactory.getLogger().debug("refresh remote {}", item);
             if (StringUtils.isNotEmpty(content)) {
-                switchHostService.saveContent(item,content);
+                saveContent(item, content);
             }
+        }
+    }
+
+    public void saveContent(HostItem item, String content) {
+        // 保存
+        switchHostService.saveContent(item, content);
+        //  是否应用
+        if (switchHostService.isAvailableItem(item) && item.isApply()) {
+            switchHostService.replaceSystemHostsContent(content);
         }
     }
 
@@ -102,7 +118,6 @@ public class SwitchHostApp extends Application {
         switchHostService.updateContent(oldItem, edit.getContent());
         edit.setContent(newItem, switchHostService.getContent(newItem));
     }
-
 
 
     public void init() throws Exception {
