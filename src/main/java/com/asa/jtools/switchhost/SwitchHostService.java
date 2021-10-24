@@ -4,6 +4,7 @@ import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.StringUtils;
 import com.asa.base.utils.io.FileUtils;
 import com.asa.base.utils.io.FilenameUtils;
+import com.asa.jtools.base.net.NetworkService;
 import com.asa.jtools.base.utils.ObjectMapperUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.bean.HostItems;
@@ -56,6 +57,8 @@ public class SwitchHostService {
 
     private SwitchHostSettings settings;
 
+    private Map<String, String> hostsContentCache;
+
     public SwitchHostService() {
 
     }
@@ -63,6 +66,7 @@ public class SwitchHostService {
     @PostConstruct
     public void init() {
 
+        hostsContentCache = new HashMap<>();
         try {
             FileUtils.forceMkdir(HOST_DIR);
         } catch (Exception e) {
@@ -145,7 +149,7 @@ public class SwitchHostService {
         try {
             return objectMapper.readValue(file, valueType);
         } catch (Exception e) {
-            LoggerFactory.getLogger().error(e,"error read {}", file.getAbsolutePath());
+            LoggerFactory.getLogger().error(e, "error read {}", file.getAbsolutePath());
         }
         return null;
     }
@@ -253,5 +257,73 @@ public class SwitchHostService {
     public void destroy() {
 
         saveHostItems(hostItems);
+    }
+
+    private boolean itemExist(HostItem item) {
+
+        return item != null && StringUtils.isNotEmpty(item.getId());
+    }
+
+    public void saveContent(HostItem item, String content) {
+
+        LoggerFactory.getLogger().debug("saveContent {} ", item);
+        if (itemExist(item)) {
+            updateContent(item, content);
+            String path = getHostsPath(item.getId());
+            try {
+                FileUtils.stringSaveToSystemFilePath(content, path);
+            } catch (IOException e) {
+                LoggerFactory.getLogger().error(e, "error save content {} to {}", item, path);
+            }
+        }
+    }
+
+    public void updateContent(HostItem item, String content) {
+
+        if (itemExist(item)) {
+            String id = item.getId();
+            hostsContentCache.put(id, content);
+        }
+    }
+
+    public String getContent(HostItem item) {
+
+        if (itemExist(item)) {
+            String id = item.getId();
+            if (hostsContentCache.containsKey(id)) {
+                return hostsContentCache.get(id);
+            }
+            try {
+                String path = getHostsPath(id);
+                String text = FileUtils.systemFilePathToString(path);
+                hostsContentCache.put(id, text);
+                return text;
+            } catch (Exception e) {
+                LoggerFactory.getLogger().debug("error get content {}", item);
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+
+    private String getHostsPath(String id) {
+
+        return FilenameUtils.concat(HOST_DIR, id);
+    }
+
+    public String getRemoteContent(HostItem item) {
+
+        if (isRemoteType(item)) {
+            String path = item.getPath();
+            NetworkService networkService = new NetworkService();
+            String content = networkService.GET(path, String.class);
+            return content;
+        }
+        return StringUtils.EMPTY;
+    }
+
+    public boolean isRemoteType(HostItem item) {
+
+        return item != null && HostItem.HostType.Remote.equals(item.getType());
     }
 }

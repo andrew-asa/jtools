@@ -46,9 +46,29 @@ public class SwitchHostEvent extends Event {
     public static final EventType<SwitchHostEvent> SWITCH_HOST_ADD_CHILD_EVENT =
             new EventType<>(Event.ANY, "SWITCH_HOST_ADD_CHILD_EVENT");
 
+    /**
+     * 选中叶子节点
+     */
+    public static final EventType<SwitchHostEvent> SWITCH_HOST_SELECT_EVENT =
+            new EventType<>(Event.ANY, "SWITCH_HOST_SELECT_EVENT");
+
+    /**
+     * 保存编辑文本
+     */
+    public static final EventType<SwitchHostEvent> SWITCH_HOST_SAVE_EVENT =
+            new EventType<>(Event.ANY, "SWITCH_HOST_SAVE_EVENT");
+
+    /**
+     * 刷新远程host
+     */
+    public static final EventType<SwitchHostEvent> SWITCH_HOST_REFRESH_REMOTE =
+            new EventType<>(Event.ANY, "SWITCH_HOST_REFRESH_REMOTE");
+
     private HostItem value;
 
     private HostItem oldValue;
+
+    private String content;
 
     public SwitchHostEvent(final Object source,
                            final EventType<SwitchHostEvent> eventType, HostItem value) {
@@ -89,5 +109,15 @@ public class SwitchHostEvent extends Event {
     public void setOldValue(HostItem oldValue) {
 
         this.oldValue = oldValue;
+    }
+
+    public String getContent() {
+
+        return content;
+    }
+
+    public void setContent(String content) {
+
+        this.content = content;
     }
 }

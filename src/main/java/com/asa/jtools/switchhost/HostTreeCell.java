@@ -111,7 +111,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
             ContextMenu contextMenu = new ContextMenu();
             MenuItem refresh = new MenuItem("刷新");
             refresh.setOnAction(event -> {
-                System.out.println("刷新");
+                refreshRemoteItem(hostItem);
             });
             contextMenu.getItems().add(refresh);
             setContextMenu(contextMenu);
@@ -124,6 +124,11 @@ public class HostTreeCell extends TreeCell<HostItem> {
             contextMenu.getItems().add(add);
             setContextMenu(contextMenu);
         }
+    }
+
+    private void refreshRemoteItem(HostItem hostItem) {
+        SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_REFRESH_REMOTE, hostItem);
+        fireEvent(addEvent);
     }
 
     private void addChild(HostItem hostItem) {

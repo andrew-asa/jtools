@@ -1,5 +1,6 @@
 package com.asa.jtools.switchhost;
 
+import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.utils.FontIconUtils;
@@ -8,6 +9,8 @@ import com.asa.jtools.base.utils.RandomStringUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.bean.HostItems;
 import com.asa.jtools.switchhost.constant.SwitchHostConstant;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
@@ -66,10 +69,38 @@ public class SwitchHostNavPane extends BorderPane {
             e.consume();
             updateTreeItem(e.getValue(), e.getOldValue());
         });
+        treeView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<HostItem>>() {
+
+            @Override
+            public void changed(ObservableValue<? extends TreeItem<HostItem>> observable, TreeItem<HostItem> oldValue, TreeItem<HostItem> newValue) {
+
+                selectHostItem(observable, oldValue, newValue);
+            }
+        });
         treeView.setShowRoot(false);
         setTreeItems(treeItems);
         return treeView;
     }
+
+    /**
+     * 只有点击的是host item 才进行触发
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
+    public void selectHostItem(ObservableValue<? extends TreeItem<HostItem>> observable, TreeItem<HostItem> oldValue, TreeItem<HostItem> newValue) {
+
+        //LoggerFactory.getLogger().debug("select {} to new {}", oldValue, newValue);
+        if (isHostItemLeaf(newValue)) {
+            HostItem newItem = newValue.getValue();
+            SwitchHostEvent event = new SwitchHostEvent(SwitchHostNavPane.this, SwitchHostEvent.SWITCH_HOST_SELECT_EVENT, newItem);
+            if (isHostItemLeaf(oldValue)) {
+                event.setOldValue(oldValue.getValue());
+            }
+            fireEvent(event);
+        }
+    }
+
 
     public void setTreeItems(HostItems treeItems) {
 
@@ -265,7 +296,7 @@ public class SwitchHostNavPane extends BorderPane {
                     //    需要关闭上一个已经打开的按钮
                     HostItem currentNew = current.clone();
                     currentNew.setApply(false);
-                    updateTreeItem(currentNew,current);
+                    updateTreeItem(currentNew, current);
                 }
                 return checkResult;
             }

@@ -1,14 +1,11 @@
 package com.asa.jtools.switchhost;
 
-import javafx.beans.NamedArg;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventTarget;
-import javafx.event.EventType;
+import com.asa.jtools.switchhost.bean.HostItem;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 
 /**
  * @author andrew_asa
@@ -18,6 +15,10 @@ public class SwitchHostEditPane extends BorderPane {
 
     private SwitchHostService switchHostService;
 
+    private TextArea textArea;
+
+    private HostItem currentItem;
+
     public SwitchHostEditPane(SwitchHostService switchHostService) {
 
         super();
@@ -25,10 +26,35 @@ public class SwitchHostEditPane extends BorderPane {
     }
 
     private void init(SwitchHostService switchHostService) {
+
         this.switchHostService = switchHostService;
-        TextArea textArea = new TextArea();
+        this.textArea = new TextArea();
         setCenter(textArea);
+        customMenu();
     }
 
+    private void customMenu() {
 
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuSave = new MenuItem("保存(S)");
+        menuSave.setAccelerator(KeyCombination.valueOf("Ctrl+S"));
+        menuSave.setOnAction(e -> {
+            SwitchHostEvent event = new SwitchHostEvent(SwitchHostEditPane.this, SwitchHostEvent.SWITCH_HOST_SAVE_EVENT, currentItem);
+            event.setContent(textArea.getText());
+            fireEvent(event);
+        });
+        contextMenu.getItems().add(menuSave);
+        textArea.setContextMenu(contextMenu);
+    }
+
+    public void setContent(HostItem currentItem, String content) {
+
+        this.currentItem = currentItem;
+        textArea.setText(content);
+    }
+
+    public String getContent() {
+
+        return textArea.getText();
+    }
 }
