@@ -1,6 +1,7 @@
 package com.asa.jtools.base.ui;
 
 import javafx.scene.Parent;
+import javafx.stage.Stage;
 
 /**
  * @author andrew_asa
@@ -10,7 +11,9 @@ public interface SubPane {
 
     Parent getNode();
 
-    void init();
+    void init(Stage stage);
 
     void onClose();
+
+    String getName();
 }

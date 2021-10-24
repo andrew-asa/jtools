@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class SwitchHostConstant {
 
+    public static final String APP_NAME = "SwitchHost";
+
     /**
      * 数据存放位置
      */

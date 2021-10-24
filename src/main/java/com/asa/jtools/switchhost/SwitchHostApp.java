@@ -18,8 +18,8 @@ public class SwitchHostApp extends Application {
     @Override
     public void start(Stage stage) {
 
-        JToolsService.setStage(stage);
         mainPane = new SwitchHostMainPane();
+        mainPane.init(stage);
         Scene scene = new Scene(mainPane.getNode(), 900, 700);
         stage.setScene(scene);
         stage.show();

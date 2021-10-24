@@ -193,7 +193,7 @@ public class HostTreeCell extends TreeCell<HostItem> {
         Button edit = FontIconUtils.createIconButton(FontAwesome.EDIT);
         Button delete = FontIconUtils.createIconButton(FontAwesome.TRASH);
         delete.setOnAction(e -> {
-            Message.sureConfirm(JToolsService.getStage(), "是否真的删除", de -> {
+            Message.sureConfirm(SwitchHostMainPane.getStage(), "是否真的删除", de -> {
                 SwitchHostEvent addEvent = new SwitchHostEvent(HostTreeCell.this, SwitchHostEvent.SWITCH_HOST_REMOVE_EVENT, hostItem);
                 fireEvent(addEvent);
             });

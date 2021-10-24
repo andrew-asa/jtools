@@ -270,22 +270,22 @@ public class SwitchHostService {
      *
      * @param content
      */
-    public void replaceSystemHostsContent(String content) throws Exception{
+    public void replaceSystemHostsContent(String content) throws Exception {
         //  替换/ect/hosts文件内容
         String path = SwitchHostService.SYSTEM_HOSTS_PATH;
         //String path = "/Users/andrew_asa/.jtools/switchhost/hosttemp";
         try {
-            LoggerFactory.getLogger().debug("replace system hosts content \n{}",content);
+            LoggerFactory.getLogger().debug("replace system hosts content");
             FileUtils.stringSaveToSystemFilePath(content, path);
         } catch (Exception e) {
-            LoggerFactory.getLogger().error(e, "error replace system hosts content");
+            LoggerFactory.getLogger().error("error replace system hosts content");
             throw e;
         }
     }
 
     public void saveContent(HostItem item, String content) {
 
-        LoggerFactory.getLogger().debug("saveContent {} \n {}", item,content);
+        //LoggerFactory.getLogger().debug("saveContent {} \n {}", item, content);
         if (itemExist(item)) {
             updateContent(item, content);
             String path = getHostsPath(item.getId());
@@ -353,6 +353,7 @@ public class SwitchHostService {
 
     /**
      * 是否是应用host规则
+     *
      * @param newItem
      * @param oldItem
      * @return

@@ -3,11 +3,14 @@ package com.asa.jtools.switchhost;
 import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.ui.SubPane;
+import com.asa.jtools.base.utils.Message;
 import com.asa.jtools.switchhost.bean.HostItem;
 import com.asa.jtools.switchhost.bean.HostItems;
+import com.asa.jtools.switchhost.constant.SwitchHostConstant;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.nio.file.AccessDeniedException;
 
@@ -27,15 +30,28 @@ public class SwitchHostMainPane implements SubPane {
 
     private SwitchHostService switchHostService;
 
+    private static Stage stage;
+
+
     public SwitchHostMainPane() {
 
         stackPane = new StackPane();
         borderPane = new BorderPane();
-        init();
     }
 
-    public void init() {
+    public static Stage getStage() {
 
+        return stage;
+    }
+
+    public static void setStage(Stage stage) {
+
+        SwitchHostMainPane.stage = stage;
+    }
+
+    public void init(Stage stage) {
+
+        setStage(stage);
         switchHostService = new SwitchHostService();
         switchHostService.init();
         stackPane.getChildren().add(borderPane);
@@ -53,6 +69,12 @@ public class SwitchHostMainPane implements SubPane {
     public void onClose() {
 
         switchHostService.destroy();
+    }
+
+    @Override
+    public String getName() {
+
+        return SwitchHostConstant.APP_NAME;
     }
 
     @Override
@@ -111,9 +133,9 @@ public class SwitchHostMainPane implements SubPane {
             switchHostService.replaceSystemHostsContent(content);
         } catch (AccessDeniedException e) {
             // 无法访问文件，无法替换/etc/hosts文件
-
+            Message.confirm(getStage(), "没有权限修改/etc/hosts文件，请用超管权限重新打开");
         } catch (Exception e2) {
-
+            LoggerFactory.getLogger().error(e2, "error apply \n {} \nto /etc/hosts", content);
         }
     }
 

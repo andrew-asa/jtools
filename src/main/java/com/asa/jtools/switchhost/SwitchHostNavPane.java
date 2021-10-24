@@ -292,7 +292,7 @@ public class SwitchHostNavPane extends BorderPane {
             // 打开按钮
             HostItem current = treeItems.getApplyItem();
             if (current != null && StringUtils.isNotEmpty(current.getId())) {
-                boolean checkResult = Message.confirm(JToolsService.getStage(), "存在正在使用的hosts,是否关闭");
+                boolean checkResult = Message.confirm(SwitchHostMainPane.getStage(), "存在正在使用的hosts,是否关闭");
                 if (checkResult) {
                     //    需要关闭上一个已经打开的按钮
                     HostItem currentNew = current.clone();

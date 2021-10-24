@@ -8,15 +8,5 @@ import javafx.stage.Stage;
  */
 public class JToolsService {
 
-    private static Stage stage;
 
-    public static Stage getStage() {
-
-        return stage;
-    }
-
-    public static void setStage(Stage stage) {
-
-        JToolsService.stage = stage;
-    }
 }
