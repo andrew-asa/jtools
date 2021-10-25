@@ -1,2 +1,2 @@
 #!/bin/sh
-jtools_exec bin.FindFile $@
+jtools_exec FindFile $@
