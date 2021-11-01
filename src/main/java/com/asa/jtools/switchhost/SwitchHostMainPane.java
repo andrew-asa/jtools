@@ -114,6 +114,7 @@ public class SwitchHostMainPane implements SubPane {
             LoggerFactory.getLogger().debug("refresh remote {}", item);
             if (StringUtils.isNotEmpty(content)) {
                 saveContent(item, content);
+                edit.invalidItemContent(item, content);
             }
         }
     }

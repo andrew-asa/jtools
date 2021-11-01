@@ -1,5 +1,6 @@
 package com.asa.base.utils;
 
+import com.asa.base.lang.Filter;
 import com.asa.base.log.LoggerFactory;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.Resource;
@@ -9,6 +10,9 @@ import org.springframework.core.type.classreading.MetadataReader;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author andrew_asa
@@ -20,22 +24,67 @@ public class ClassScanUtils {
 
     private static String resourcePattern = "**/*.class";
 
+    private static Predicate<Class<?>> ALL_ACCEPT_FILTER = aClass -> true;
+
+    private static Consumer<Class<?>> DO_NOTHING_CONSUMER = aClass -> {
+    };
+
     private static ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     private static CachingMetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory();
 
     public static Set<Class<?>> getClasses(String basePackage) throws Exception {
 
+        return getClasses(basePackage, ALL_ACCEPT_FILTER);
+    }
+
+    /**
+     * @param basePackage
+     * @param filter
+     * @return
+     * @throws Exception
+     */
+    public static Set<Class<?>> getClasses(String basePackage, Predicate<Class<?>> filter) throws Exception {
+
         Set<Class<?>> ret = new HashSet<Class<?>>();
+        traverseClass(basePackage, filter, aClass -> ret.add(aClass));
+        return ret;
+    }
+
+    public static void traverseClass(String basePackage, Consumer<Class<?>> consumer) throws Exception {
+
+        traverseClass(basePackage, ALL_ACCEPT_FILTER, consumer);
+    }
+
+    /**
+     * 遍历jar包中的类
+     *
+     * @param basePackage
+     * @param filter      过滤器
+     * @param consumer    消费器
+     * @throws Exception
+     */
+    public static void traverseClass(String basePackage,
+                                     Predicate<Class<?>> filter,
+                                     Consumer<Class<?>> consumer) throws Exception {
+
         String searchPath = getPackageSearchPath(basePackage);
         Resource[] resources = resolver.getResources(searchPath);
+        if (filter == null) {
+            filter = ALL_ACCEPT_FILTER;
+        }
+        if (consumer == null) {
+            consumer = DO_NOTHING_CONSUMER;
+        }
         for (Resource resource : resources) {
             if (resource.isReadable()) {
                 try {
                     MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
                     String className = metadataReader.getClassMetadata().getClassName();
                     Class<?> clazz = ClassUtils.forName(className, beanClassLoader);
-                    ret.add(clazz);
+                    if (filter.test(clazz)) {
+                        consumer.accept(clazz);
+                    }
                 } catch (Throwable ex) {
                     LoggerFactory.getLogger().error(
                             "Failed to read candidate component class: " + resource, ex);
@@ -44,7 +93,6 @@ public class ClassScanUtils {
                 LoggerFactory.getLogger().info("Ignored because not readable: " + resource);
             }
         }
-        return ret;
     }
 
     public static String getPackageSearchPath(String basePackage) {

@@ -20,15 +20,12 @@ public class Ls {
 
     public void listCmd() {
 
-        Set<Class<?>> classes = null;
         try {
-            classes = ClassScanUtils.getClasses("com.asa.jtools.bin");
             List<String> names = new ArrayList<String>();
-            for (Class c : classes) {
-                if (!c.getName().contains("$")) {
-                    names.add(c.getSimpleName());
-                }
-            }
+            ClassScanUtils.traverseClass("com.asa.jtools.bin",
+                                         aClass -> !aClass.getName().contains("$"),
+                                         aClass -> names.add(aClass.getSimpleName()));
+
             System.out.println("[" + StringUtils.join(names, ",") + "]");
         } catch (Exception e) {
             e.printStackTrace();

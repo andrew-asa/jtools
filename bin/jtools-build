@@ -1,17 +1,43 @@
 #!/bin/sh
 JAR_DIR="/Users/andrew_asa/Documents/code/github/andrew-asa/exec/jtools/"
 cd $JAR_DIR
-if [ $# -eq 1 ] ; then
-    if [ "$1" = "dep" ];then
-        SHELL="mvn dependency:copy-dependencies -DoutputDirectory=./lib"
-        echo $SHELL
-        $SHELL
-    elif [ "$1" = "jar" ];then
-        SHELL="mvn jar:jar"
-        echo $SHELL
-        $SHELL
-    fi
-    exit 1;
+
+has_arg(){
+   if [ $# -lt 2 ];then
+     return 0
+   fi
+   arg_count=$#
+   last_arg_index=`expr $arg_count - 1`
+   target_arg=${@: -1}
+   all_arg=${@:1:$last_arg_index}
+   for i in $all_arg;
+   do
+      if test $target_arg = $i
+      then
+        return 1
+      fi
+   done
+   return 0
+}
+if [ $# -lt 1 ]
+    then
+     echo "输入参数 dep(构建依赖) 或者 jar(构建jar包)"
+     exit 1
 fi
 
-
+has_arg $@ "dep"
+ret=$?
+if [ $ret -eq 1 ]
+    then
+     SHELL="mvn dependency:copy-dependencies -DoutputDirectory=./lib"
+     echo $SHELL
+     $SHELL
+fi
+has_arg $@ "jar"
+ret=$?
+if [ $ret -eq 1 ]
+    then
+     SHELL="mvn jar:jar"
+     echo $SHELL
+     $SHELL
+fi

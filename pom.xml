@@ -186,6 +186,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
+<!--                            <excludes></excludes>-->
 <!--                            <mainClass>com.test.m2.me_demo.TestMain</mainClass>-->
                         </manifest>
                     </archive>

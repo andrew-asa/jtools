@@ -4,11 +4,14 @@ cd $JAR_DIR
 JAR="com.asa.jtools-1.0-SNAPSHOT.jar"
 JAR_DIR="$JAR_DIR/target/"
 CLASS_PACKAGE="com.asa.jtools.bin"
+DEFAULT_CMD="Ls"
 if [ $# -lt 1 ] ; then
 echo "输入命令名称"
-exit 1;
-fi
+#exit 1;
+CMD=$DEFAULT_CMD
+else
 CMD=$1
+fi
 ARG=""
 for((i=2;i<=$#;i++));
 do

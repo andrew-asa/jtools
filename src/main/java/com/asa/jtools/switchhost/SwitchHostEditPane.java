@@ -1,5 +1,6 @@
 package com.asa.jtools.switchhost;
 
+import com.asa.base.utils.StringUtils;
 import com.asa.jtools.switchhost.bean.HostItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -56,5 +57,12 @@ public class SwitchHostEditPane extends BorderPane {
     public String getContent() {
 
         return textArea.getText();
+    }
+
+    public void invalidItemContent(HostItem item, String newContent) {
+
+        if (currentItem != null && item != null && StringUtils.equals(item.getId(), currentItem.getId())) {
+            setContent(currentItem, newContent);
+        }
     }
 }
