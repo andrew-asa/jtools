@@ -1,6 +1,7 @@
 package com.asa.jtools.switchhost;
 
 import com.asa.base.log.LoggerFactory;
+import com.asa.base.utils.MapUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.base.utils.io.FileUtils;
 import com.asa.base.utils.io.FilenameUtils;
@@ -330,6 +331,12 @@ public class SwitchHostService {
         return FilenameUtils.concat(HOST_DIR, id);
     }
 
+    /**
+     * 获取远方hosts文件内容
+     *
+     * @param item
+     * @return
+     */
     public String getRemoteContent(HostItem item) {
 
         if (isRemoteType(item)) {
@@ -340,6 +347,36 @@ public class SwitchHostService {
         }
         return StringUtils.EMPTY;
     }
+
+    /**
+     * 刷新远程hosts并保存
+     *
+     * @param item
+     * @return
+     */
+    //public String refreshRemoteItem(HostItem item) {
+    //
+    //    if (isRemoteType(item)) {
+    //        String content = getRemoteContent(item);
+    //        LoggerFactory.getLogger().debug("refresh remote {}", item);
+    //        if (StringUtils.isNotEmpty(content)) {
+    //            saveContent(item, content);
+    //            return content;
+    //        }
+    //    }
+    //    return StringUtils.EMPTY;
+    //}
+
+    /**
+     * 刷新正在应用的远程hosts文件
+     *
+     * @return
+     */
+    //public String refreshApplyRemoteItem() {
+    //
+    //    HostItem hostItem = getApplyItem();
+    //    return refreshRemoteItem(hostItem);
+    //}
 
     public boolean isRemoteType(HostItem item) {
 
@@ -363,5 +400,13 @@ public class SwitchHostService {
         return isAvailableItem(newItem) &&
                 isAvailableItem(oldItem) &&
                 newItem.isApply() && !oldItem.isApply();
+    }
+
+    public HostItem getApplyItem() {
+
+        if (hostItems != null) {
+            return hostItems.getApplyItem();
+        }
+        return null;
     }
 }

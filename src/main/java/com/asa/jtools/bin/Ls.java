@@ -1,9 +1,11 @@
 package com.asa.jtools.bin;
 
 import com.asa.base.utils.ClassScanUtils;
+import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,6 +14,8 @@ import java.util.List;
  * 切换host文件
  */
 public class Ls {
+
+    public List<Class<?>> ignoreBins = Arrays.asList(DefaultArgumentJtoolsBin.class);
 
     public Ls() {
 
@@ -22,7 +26,7 @@ public class Ls {
         try {
             List<String> names = new ArrayList<String>();
             ClassScanUtils.traverseClass("com.asa.jtools.bin",
-                                         aClass -> !aClass.getName().contains("$"),
+                                         aClass -> !aClass.getName().contains("$") && !isIgnoreClass(aClass),
                                          aClass -> names.add(aClass.getSimpleName()));
 
             System.out.println("[" + StringUtils.join(names, ",") + "]");
@@ -30,6 +34,12 @@ public class Ls {
             e.printStackTrace();
         }
     }
+
+    public boolean isIgnoreClass(Class<?> aClass) {
+
+        return ListUtils.contain(ignoreBins, aClass);
+    }
+
 
     public static void main(String[] args) {
 
