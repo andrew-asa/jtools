@@ -1,5 +1,6 @@
 package com.asa.jtools.bin;
 
+import com.asa.base.utils.ArrayUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -17,6 +18,8 @@ public class DefaultArgumentJtoolsBin {
 
     private CommandLine commandLine;
 
+    private String[] args;
+
     public DefaultArgumentJtoolsBin(String[] args) {
 
         this.init(args);
@@ -24,9 +27,15 @@ public class DefaultArgumentJtoolsBin {
 
     private void init(String[] args) {
 
+        this.args = args;
         options = new Options();
         createOptions(options);
         commandLine = parseArgs(args);
+    }
+
+    public boolean hasArg() {
+
+        return args != null && args.length > 0;
     }
 
     protected CommandLine parseArgs(String[] args) {
@@ -45,6 +54,7 @@ public class DefaultArgumentJtoolsBin {
 
         return this.commandLine.hasOption(opt);
     }
+
     public String getOptionValue(String opt) {
 
         return this.commandLine.getOptionValue(opt);
@@ -57,6 +67,7 @@ public class DefaultArgumentJtoolsBin {
 
 
     public void printHelp() {
+
         HelpFormatter hf = new HelpFormatter();
         hf.setSyntaxPrefix("提示: ");
         hf.printHelp("FindFile 帮助文档", options);
@@ -66,6 +77,7 @@ public class DefaultArgumentJtoolsBin {
 
         if (hasOption(option)) {
             printHelp();
+            System.out.println();
         }
     }
 

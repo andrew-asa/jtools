@@ -19,7 +19,7 @@ ARG="${ARG} ${!i} "
 done
 #echo $CMD $ARG
 SHELL="java -cp "$JAR_DIR$JAR:lib/*" "$CLASS_PACKAGE.$CMD" "$ARG""
-echo $SHELL
+#echo $SHELL
 $SHELL
 
 #java -cp $(echo lib/*.jar | tr ' ' ':') "com.asa.jtools.bin/SwitchHosts"
