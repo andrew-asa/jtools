@@ -1,6 +1,5 @@
 package com.asa.base.utils;
 
-import com.asa.base.lang.Filter;
 import com.asa.base.log.LoggerFactory;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.Resource;
@@ -11,7 +10,6 @@ import org.springframework.core.type.classreading.MetadataReader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -24,7 +22,15 @@ public class ClassScanUtils {
 
     private static String resourcePattern = "**/*.class";
 
-    private static Predicate<Class<?>> ALL_ACCEPT_FILTER = aClass -> true;
+    /**
+     * 所有类放行
+     */
+    public static Predicate<Class<?>> ALL_CLASS_ACCEPT_FILTER = aClass -> true;
+
+    /**
+     * 所有字符串放行
+     */
+    public static Predicate<String> ALL_STRING_ACCEPT_FILTER = s -> true;
 
     private static Consumer<Class<?>> DO_NOTHING_CONSUMER = aClass -> {
     };
@@ -35,7 +41,7 @@ public class ClassScanUtils {
 
     public static Set<Class<?>> getClasses(String basePackage) throws Exception {
 
-        return getClasses(basePackage, ALL_ACCEPT_FILTER);
+        return getClasses(basePackage, ALL_CLASS_ACCEPT_FILTER);
     }
 
     /**
@@ -53,7 +59,7 @@ public class ClassScanUtils {
 
     public static void traverseClass(String basePackage, Consumer<Class<?>> consumer) throws Exception {
 
-        traverseClass(basePackage, ALL_ACCEPT_FILTER, consumer);
+        traverseClass(basePackage, ALL_CLASS_ACCEPT_FILTER, consumer);
     }
 
     /**
@@ -71,7 +77,7 @@ public class ClassScanUtils {
         String searchPath = getPackageSearchPath(basePackage);
         Resource[] resources = resolver.getResources(searchPath);
         if (filter == null) {
-            filter = ALL_ACCEPT_FILTER;
+            filter = ALL_CLASS_ACCEPT_FILTER;
         }
         if (consumer == null) {
             consumer = DO_NOTHING_CONSUMER;

@@ -2,7 +2,8 @@ package com.asa.jtools.bin;
 
 import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.StringUtils;
-import com.asa.jtools.base.utils.Message;
+import com.asa.jtools.bin.intr.ConsoleSupport;
+import com.asa.jtools.bin.intr.GuiSupport;
 import com.asa.jtools.switchhost.SwitchHostApp;
 import com.asa.jtools.switchhost.SwitchHostService;
 import com.asa.jtools.switchhost.bean.HostItem;
@@ -16,7 +17,7 @@ import java.nio.file.AccessDeniedException;
  * @date 2021/10/5.
  * 切换host文件
  */
-public class SwitchHosts extends DefaultArgumentJtoolsBin {
+public class SwitchHosts extends DefaultArgumentJtoolsBin implements ConsoleSupport, GuiSupport {
 
     public SwitchHosts(String[] args) {
 

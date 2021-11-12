@@ -1,5 +1,6 @@
 package com.asa.jtools.bin;
 
+import com.asa.jtools.bin.intr.ConsoleSupport;
 import org.apache.commons.cli.Options;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import java.util.regex.Pattern;
  * @author andrew_asa
  * @date 2021/8/2.
  */
-public class FindFile extends DefaultArgumentJtoolsBin {
+public class FindFile extends DefaultArgumentJtoolsBin implements ConsoleSupport {
 
     private String[] args;
 

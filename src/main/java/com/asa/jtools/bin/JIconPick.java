@@ -3,6 +3,7 @@ package com.asa.jtools.bin;
 import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
+import com.asa.jtools.bin.intr.GuiSupport;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -18,20 +19,18 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.controlsfx.control.CheckComboBox;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author andrew_asa
  * @date 2021/10/24.
  */
-public class JIconPick extends Application {
+public class JIconPick extends Application implements GuiSupport {
 
     private BorderPane pane;
 
