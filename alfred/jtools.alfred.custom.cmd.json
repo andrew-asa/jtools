@@ -1,0 +1,19 @@
+{
+  "items" : [ {
+    "uid" : "jtools_build jar",
+    "args" : "jtools_build jar",
+    "valid" : true,
+    "autocomplete" : true,
+    "title" : "jtools_build jar",
+    "subtitle" : "enter to exec",
+    "icon" : "icon.png"
+  },{
+    "uid" : "jtools_build dep",
+    "args" : "jtools_build dep",
+    "valid" : true,
+    "autocomplete" : true,
+    "title" : "jtools_build dep",
+    "subtitle" : "enter to exec",
+    "icon" : "icon.png"
+  } ]
+}

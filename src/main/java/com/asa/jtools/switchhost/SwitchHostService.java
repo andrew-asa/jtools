@@ -284,6 +284,10 @@ public class SwitchHostService {
         }
     }
 
+    public void replaceSystemHostsContent(String content, String pw) {
+
+    }
+
     public void saveContent(HostItem item, String content) {
 
         //LoggerFactory.getLogger().debug("saveContent {} \n {}", item, content);

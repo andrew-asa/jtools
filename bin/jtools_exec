@@ -1,10 +1,12 @@
 #!/bin/sh
 JAR_DIR="/Users/andrew_asa/Documents/code/github/andrew-asa/exec/jtools"
 cd $JAR_DIR
-JAR="com.asa.jtools-1.0-SNAPSHOT.jar"
+JAR="jtools-1.0-SNAPSHOT.jar"
 JAR_DIR="$JAR_DIR/target/"
 CLASS_PACKAGE="com.asa.jtools.bin"
 DEFAULT_CMD="Ls"
+CLASS_PATH="$JAR_DIR$JAR:lib/*"
+
 if [ $# -lt 1 ] ; then
 echo "输入命令名称"
 #exit 1;
@@ -13,16 +15,23 @@ else
 CMD=$1
 fi
 ARG=""
-for((i=2;i<=$#;i++));
+ARG_INDEX=2
+for((i=$ARG_INDEX;i<=$#;i++));
 do
 ARG="${ARG} ${!i} "
 done
+PACKAGE_SEP="\\."
+if [[ $CMD =~ $PACKAGE_SEP ]]
+then
+#  echo "全名称"
+  CLASS_NAME="$CMD"
+else
+#  echo "bin里面的命令"
+  CLASS_NAME="$CLASS_PACKAGE.$CMD"
+fi
 #echo $CMD $ARG
-SHELL="java -cp "$JAR_DIR$JAR:lib/*" "$CLASS_PACKAGE.$CMD" "$ARG""
+SHELL="java -cp "$CLASS_PATH" "$CLASS_NAME" "$ARG""
 #echo $SHELL
 $SHELL
 
-#java -cp $(echo lib/*.jar | tr ' ' ':') "com.asa.jtools.bin/SwitchHosts"
-#java -cp "lib/*" "com.asa.jtools.bin/SwitchHosts"
-#java -cp "target/com.asa.jtools-1.0-SNAPSHOT.jar:lib/*" "com.asa.jtools.bin/SwitchHosts"
 

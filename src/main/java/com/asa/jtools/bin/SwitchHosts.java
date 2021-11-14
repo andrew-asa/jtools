@@ -2,8 +2,9 @@ package com.asa.jtools.bin;
 
 import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.StringUtils;
-import com.asa.jtools.bin.intr.ConsoleSupport;
-import com.asa.jtools.bin.intr.GuiSupport;
+import com.asa.jtools.base.lang.ConsoleSupport;
+import com.asa.jtools.base.lang.DefaultArgumentJtoolsBin;
+import com.asa.jtools.base.lang.GuiSupport;
 import com.asa.jtools.switchhost.SwitchHostApp;
 import com.asa.jtools.switchhost.SwitchHostService;
 import com.asa.jtools.switchhost.bean.HostItem;
@@ -54,6 +55,7 @@ public class SwitchHosts extends DefaultArgumentJtoolsBin implements ConsoleSupp
                 } catch (AccessDeniedException e) {
                     // 无法访问文件，无法替换/etc/hosts文件
                     LoggerFactory.getLogger().error("没有权限修改/etc/hosts文件，请用超管权限重新打开");
+
                 } catch (Exception e2) {
                     LoggerFactory.getLogger().error(e2, "error apply \n {} \nto /etc/hosts", content);
                 }

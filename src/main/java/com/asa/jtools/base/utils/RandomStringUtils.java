@@ -1,7 +1,7 @@
 package com.asa.jtools.base.utils;
 
+import com.asa.base.utils.RandomUtils;
 import com.asa.base.utils.StringUtils;
-import com.asa.third.org.apache.commons.lang3.RandomUtils;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

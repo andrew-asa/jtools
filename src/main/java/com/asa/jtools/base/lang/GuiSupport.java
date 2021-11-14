@@ -1,4 +1,4 @@
-package com.asa.jtools.bin.intr;
+package com.asa.jtools.base.lang;
 
 /**
  * @author andrew_asa

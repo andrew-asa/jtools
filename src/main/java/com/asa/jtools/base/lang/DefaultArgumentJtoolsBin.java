@@ -1,6 +1,5 @@
-package com.asa.jtools.bin;
+package com.asa.jtools.base.lang;
 
-import com.asa.base.utils.ArrayUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -42,7 +41,7 @@ public class DefaultArgumentJtoolsBin {
 
         CommandLineParser parser = new DefaultParser();
         try {
-            return parser.parse(options, args);
+            return parser.parse(options, args, false);
         } catch (ParseException e) {
             System.out.println("参数解析错误，请重试");
             System.out.println(e.getMessage());

@@ -1,7 +1,7 @@
 #!/bin/sh
 JAR_DIR="/Users/andrew_asa/Documents/code/github/andrew-asa/exec/jtools/"
 cd $JAR_DIR
-
+echo $JAR_DIR
 has_arg(){
    if [ $# -lt 2 ];then
      return 0
