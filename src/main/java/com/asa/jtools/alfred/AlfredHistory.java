@@ -39,13 +39,21 @@ public class AlfredHistory extends DefaultArgumentJtoolsBin {
         AlfredItems items = new AlfredItems();
         int index = 0;
         List<String> history = getOptHistory(s);
+        if (StringUtils.isNotEmpty(s)) {
+            s = s.trim();
+            items.addItem(createItem(s, s));
+        }
         for (String h : history) {
-            AlfredItem item = new AlfredItem(String.valueOf(index++), h, h, "enter to exec");
-            items.addItem(item);
+            items.addItem(createItem(String.valueOf(index++), h));
         }
         if (!hasOption(OPT_QUIET)) {
             System.out.println(items.buildString());
         }
+    }
+
+    private AlfredItem createItem(String id, String cmd) {
+
+        return new AlfredItem(id, cmd, cmd, "enter to exec history");
     }
 
     public List<String> getOptHistory(String search) {
