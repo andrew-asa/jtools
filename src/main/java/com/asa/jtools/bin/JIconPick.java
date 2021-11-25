@@ -1,6 +1,7 @@
 package com.asa.jtools.bin;
 
 import com.asa.base.log.LoggerFactory;
+import com.asa.base.ui.controls.button.JButton;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.jtools.base.lang.GuiSupport;
@@ -19,9 +20,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +51,7 @@ public class JIconPick extends Application implements GuiSupport {
 
         pane = new BorderPane();
         setContent(IConTypeString.FontAwesome, "");
+        BorderPane top = new BorderPane();
         HBox searchPane = new HBox();
         TextField tf = new TextField();
         listView = new ComboBox<>();
@@ -56,11 +61,24 @@ public class JIconPick extends Application implements GuiSupport {
                 setContent(listView.getSelectionModel().getSelectedItem(), tf.getText());
             }
         });
+        listView.setOnAction(e->{
+            setContent(listView.getSelectionModel().getSelectedItem(), tf.getText());
+        });
         List<String> listItem = getTypes();
         listView.getItems().addAll(listItem);
         listView.setValue(IConTypeString.FontAwesome);
+        JButton jButton = new JButton("more");
+        jButton.setOnAction(e->{
+            try {
+                getHostServices().showDocument("https://kordamp.org/ikonli/");
+                //Desktop.getDesktop().browse(new URI("https://kordamp.org/ikonli/"));
+            } catch (Exception e1) {
+            }
+        });
         searchPane.getChildren().addAll(tf, listView);
-        pane.setTop(searchPane);
+        top.setLeft(searchPane);
+        top.setRight(jButton);
+        pane.setTop(top);
 
         return new Scene(pane, 1024, 560);
     }
@@ -102,7 +120,8 @@ public class JIconPick extends Application implements GuiSupport {
     }
 
     public enum IKonType {
-        FontAwesome
+        FontAwesome,
+        Dashicons
     }
 
     public static class IConTypeString {
@@ -117,6 +136,9 @@ public class JIconPick extends Application implements GuiSupport {
         switch (type) {
             case "FontAwesome":
                 ListUtils.safeAdd(temp, ListUtils.arrayToList(FontAwesome.values()));
+                break;
+            case "Dashicons":
+                ListUtils.safeAdd(temp, ListUtils.arrayToList(Dashicons.values()));
                 break;
         }
         if (StringUtils.isNotEmpty(searchValue)) {

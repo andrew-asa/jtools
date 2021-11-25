@@ -15,5 +15,13 @@
     "title" : "jtools_build dep",
     "subtitle" : "enter to exec",
     "icon" : "icon.png"
+  },{
+    "uid" : "WeixinSpider",
+    "args" : "/Users/andrew_asa/Documents/code/github/andrew-asa/ghost/bin/weixin_spider",
+    "valid" : true,
+    "autocomplete" : true,
+    "title" : "WeixinSpider",
+    "subtitle" : "WeixinSpider",
+    "icon" : "icon.png"
   } ]
 }

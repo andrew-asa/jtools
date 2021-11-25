@@ -67,6 +67,12 @@
             <artifactId>ikonli-fontawesome-pack</artifactId>
             <version>${ikonli.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-dashicons-pack</artifactId>
+            <version>2.6.0</version>
+        </dependency>
         <!--        测试库-->
         <dependency>
             <groupId>junit</groupId>

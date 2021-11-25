@@ -4,10 +4,9 @@ import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.base.utils.io.FilenameUtils;
 import com.asa.jtools.base.lang.DefaultArgumentJtoolsBin;
+import com.asa.jtools.base.utils.ShellUtils;
 import org.apache.commons.cli.Options;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +17,12 @@ import java.util.List;
 public class AlfredHistory extends DefaultArgumentJtoolsBin {
 
     public static String USER_HOME = System.getProperty("user.home");
+
+    public AlfredHistory() {
+
+        super(new String[]{});
+
+    }
 
     public AlfredHistory(String[] args) {
 
@@ -58,7 +63,7 @@ public class AlfredHistory extends DefaultArgumentJtoolsBin {
 
     public List<String> getOptHistory(String search) {
 
-        List<String> history = getHistory();
+        List<String> history = getHistory(search);
         List<String> opt = new ArrayList<>();
         for (String h : history) {
             if (StringUtils.isNotEmpty(h)) {
@@ -90,28 +95,19 @@ public class AlfredHistory extends DefaultArgumentJtoolsBin {
         return StringUtils.EMPTY;
     }
 
-    public List<String> getHistory() {
+    public List<String> getHistory(String search) {
 
-        Process process = null;
-        List<String> processList = new ArrayList<String>();
-        try {
-            String shell = getHistoryShell();
-            process = Runtime.getRuntime().exec(shell);
-            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = "";
-            while ((line = input.readLine()) != null) {
-                processList.add(line);
-            }
-            input.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return processList;
+        return ShellUtils.execForStringList(getHistoryCmd(search));
     }
 
-    public String getHistoryShell() {
-        //return StringUtils.messageFormat("cat {}", getHistoryPath());
-        return StringUtils.messageFormat("tail -100 {}", getHistoryPath());
+    public String getHistoryCmd(String search) {
+
+        if (StringUtils.isNotEmpty(search)) {
+            search = search.trim();
+            return StringUtils.messageFormat("cat {} | grep -i \"{}\" | tail -100", getHistoryPath(), search);
+        } else {
+            return StringUtils.messageFormat("tail -100 {}", getHistoryPath());
+        }
     }
 
     public String getHistoryPath() {
