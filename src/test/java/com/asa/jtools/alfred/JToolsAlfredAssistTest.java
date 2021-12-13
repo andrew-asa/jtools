@@ -41,4 +41,22 @@ public class JToolsAlfredAssistTest extends TestCase {
         AlfredItems i2 = ObjectMapperUtils.getDefaultMapper().readValue(content, AlfredItems.class);
         System.out.println(i2);
     }
+
+    public void testMain() {
+
+    }
+
+    public void testGetBuiltInCmdAlfredItems() {
+
+    }
+
+    @Test
+    @Ignore
+    public void testGetCustomAlfredItems() {
+        
+    }
+
+    public void testCreateOptions() {
+
+    }
 }
