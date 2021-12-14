@@ -1,0 +1,14 @@
+{
+   "appDescription": {
+      "description": "Publish custom eBooks with your favorite web content!",
+      "message": "Create custom ebooks from your favorite blogs and websites."
+   },
+   "appName": {
+      "description": "Publish custom eBooks with your favorite web content!",
+      "message": "EpubPress - Read the web offline"
+   },
+   "appShortName": {
+      "description": "Name of app.",
+      "message": "EpubPress"
+   }
+}

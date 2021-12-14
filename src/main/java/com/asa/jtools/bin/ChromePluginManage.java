@@ -10,4 +10,7 @@ import com.asa.jtools.base.lang.GuiSupport;
  */
 public class ChromePluginManage implements ConsoleSupport, GuiSupport {
 
+    public static void main(String[] args) {
+
+    }
 }

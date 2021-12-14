@@ -1,0 +1,28 @@
+{
+   "author": "Harold Treen",
+   "background": {
+      "scripts": [ "build/background.js" ]
+   },
+   "browser_action": {
+      "default_icon": {
+         "20": "images/download-icon-20.png",
+         "32": "images/download-icon-32.png"
+      },
+      "default_popup": "popup.html",
+      "default_title": "EpubPress"
+   },
+   "default_locale": "en",
+   "description": "__MSG_appDescription__",
+   "homepage_url": "https://epub.press/",
+   "icons": {
+      "128": "images/download-icon-128.png",
+      "16": "images/download-icon-16.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmZg7RNRNdA7AbkFixTVE3FmDIeHdnsYvrKfn4brTUOF9S82XGzGPUbgc9AGtYbGTXl4NgcQntL720v84QhL9yOhvh060qXzk66pPALEFREXCze8oHZhH3gO9r/r7E6wwQYz0utFYhB1NW3UINHflFCRs7tB0vTsujAC1pebDh1Hwj86Bv9b2CVQQDj8ayEaNQ/9Fys4IGhXYNUPOEoW9tQzdki09sbaXOvby+dAWG8u7ffcVis1o56v96ssNbiyQ5EHFOWDm50h5ylLxbEY952man+JP7JBK9BzYNUX2Y/Anv5sj3ocZaCa0vXryHIwLQ1G2Rc25KcnZGde27Nt20QIDAQAB",
+   "manifest_version": 2,
+   "name": "__MSG_appName__",
+   "permissions": [ "tabs", "downloads", "storage", "http://*/", "https://*/" ],
+   "short_name": "__MSG_appShortName__",
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "0.12.0"
+}

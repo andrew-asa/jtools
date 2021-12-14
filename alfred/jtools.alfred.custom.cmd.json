@@ -23,5 +23,21 @@
     "title" : "WeixinSpider",
     "subtitle" : "WeixinSpider",
     "icon" : "icon.png"
+  },{
+    "uid" : "sudo SwitchHost",
+    "args" : "sudo jtools_exec com.asa.jtools.bin.SwitchHosts",
+    "valid" : true,
+    "autocomplete" : true,
+    "title" : "sudo SwitchHost",
+    "subtitle" : "sudo SwitchHost",
+    "icon" : "icon.png"
+  },{
+    "uid" : "com.asa.base deploy",
+    "args" : "/Users/andrew_asa/Documents/code/github/andrew-asa/base/deploy.sh",
+    "valid" : true,
+    "autocomplete" : true,
+    "title" : "com.asa.base deploy",
+    "subtitle" : "com.asa.base deploy",
+    "icon" : "icon.png"
   } ]
 }
