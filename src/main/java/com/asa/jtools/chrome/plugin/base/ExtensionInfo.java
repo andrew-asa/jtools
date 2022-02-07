@@ -84,4 +84,9 @@ public class ExtensionInfo {
 
         this.defaultLocal = defaultLocal;
     }
+
+    public String getName() {
+
+        return getLocalMessage(ChromeConstant.Manifest.NAME);
+    }
 }

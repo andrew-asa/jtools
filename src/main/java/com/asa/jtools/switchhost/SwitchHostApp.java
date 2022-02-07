@@ -1,6 +1,5 @@
 package com.asa.jtools.switchhost;
 
-import com.asa.jtools.base.service.JToolsService;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

@@ -1,6 +1,5 @@
-package com.asa.jtools.chrome.plugin.manage;
+package com.asa.jtools.chrome.plugin.service;
 
-import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.ObjectMapperUtils;
 import com.asa.base.utils.StringUtils;
 import com.asa.base.utils.io.FileUtils;
@@ -71,7 +70,7 @@ public class ManagementService {
     private ExtensionInfo doParse(File file) {
 
         File mf = new File(file, ChromeConstant.MANIFEST_FILE_NAME);
-        Map meta = readMap(mf);
+        Map meta = ObjectMapperUtils.readMap(mf);
         if (meta != null) {
             ExtensionInfo info = new ExtensionInfo(file.getAbsolutePath());
             info.setManifestMeta(meta);
@@ -84,16 +83,7 @@ public class ManagementService {
         return null;
     }
 
-    private Map readMap(File file) {
 
-        try {
-            Map meta = ObjectMapperUtils.getDefaultMapper().readValue(file, Map.class);
-            return meta;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private void loadDefaultLocale(File dir, ExtensionInfo info) {
 
@@ -102,7 +92,7 @@ public class ManagementService {
             String lf = FilenameUtils.concatAll(dir.getAbsolutePath(), ChromeConstant.LOCALES_DIR_NAME, defaultLocale, LOCALE_MESSAGES_FILE_NAME);
             File defaultLocalFile = new File(lf);
             if (defaultLocalFile.exists()) {
-                Map meta = readMap(defaultLocalFile);
+                Map meta = ObjectMapperUtils.readMap(defaultLocalFile);
                 if (meta != null) {
                     info.setDefaultLocal(meta);
                 }

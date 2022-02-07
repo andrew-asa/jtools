@@ -1,8 +1,8 @@
 package com.asa.jtools.chrome.plugin.manage;
 
 import com.asa.base.utils.io.FilenameUtils;
-import com.asa.jtools.chrome.plugin.base.ChromeConstant;
 import com.asa.jtools.chrome.plugin.base.ExtensionInfo;
+import com.asa.jtools.chrome.plugin.service.ManagementService;
 import junit.framework.TestCase;
 import org.junit.Assert;
 

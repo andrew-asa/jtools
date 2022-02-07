@@ -6,16 +6,31 @@ package com.asa.jtools.chrome.plugin.base;
  */
 public class ChromeConstant {
 
+    public static final String APP_NAME = "ChromePluginManage";
+
+
     public static final String MANIFEST_FILE_NAME = "manifest.json";
+
     public static final String LOCALES_DIR_NAME = "_locales";
+
     public static final String LOCALE_MESSAGES_FILE_NAME = "messages.json";
+
     public static final String MESSAGE = "message";
 
     public static final String LOCALE_MESSAGE_PREFIX = "__MSG_";
+
     public static final String LOCALE_MESSAGE_SUFFIX = "__";
-    public static class Manifest{
+
+    public static class Manifest {
+
         public static final String NAME = "name";
-        public static final String VERSION= "version";
-        public static final String DEFAULT_LOCALE= "default_locale";
+
+        public static final String DESCRIPTION = "description";
+
+        public static final String HOMEPAGE_URL = "homepage_url";
+
+        public static final String VERSION = "version";
+
+        public static final String DEFAULT_LOCALE = "default_locale";
     }
 }

@@ -1,9 +1,7 @@
 package com.asa.jtools.switchhost;
 
-import com.asa.base.log.LoggerFactory;
 import com.asa.base.utils.ListUtils;
 import com.asa.base.utils.StringUtils;
-import com.asa.jtools.base.service.JToolsService;
 import com.asa.jtools.base.utils.FontIconUtils;
 import com.asa.jtools.base.utils.Message;
 import com.asa.jtools.base.utils.RandomStringUtils;
