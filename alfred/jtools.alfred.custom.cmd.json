@@ -24,6 +24,14 @@
     "subtitle" : "WeixinSpider",
     "icon" : "icon.png"
   },{
+    "uid" : "Ghost",
+    "args" : "/Users/andrew_asa/Documents/code/github/andrew-asa/jarvis/bin/ghost",
+    "valid" : true,
+    "autocomplete" : true,
+    "title" : "Ghost",
+    "subtitle" : "Ghost",
+    "icon" : "icon.png"
+  },{
     "uid" : "sudo SwitchHost",
     "args" : "sudo jtools_exec com.asa.jtools.bin.SwitchHosts",
     "valid" : true,
